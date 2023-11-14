@@ -20,8 +20,15 @@ Krzysztof Książek
 
 # Technologie użyte w projekcie
 1. Nodejs + Express
-2. PostgreSQL
+2. PostgresSQL
 3. TypeORM
+4. React.js
+5. Markdown
+6. Docker
+7. Jest
+8. Supertest
+9. ExpressValidator
+10. Postman
 
 
 
