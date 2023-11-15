@@ -41,12 +41,12 @@ export class UserController {
       where: { username },
     });
 
-    console.log("Duplicate: ", duplicate);
 
     if (duplicate) {
       response.status(409);
       return { message: "User already exist" };
     }
+
 
     const hashedpwd = await bcrypt.hash(password, 10);
     const user = Object.assign(new User(), {
@@ -54,13 +54,12 @@ export class UserController {
       lastname,
       username,
       password: hashedpwd,
-      refreshToken: "asd",
+      refreshToken: process.env.REFRESH_TOKEN_SECRET,
     });
 
     const savedUser = await this.userRepository.save(user);
 
-    console.log("Saved user: ", savedUser);
-
+    response.status(201)
     return savedUser;
   }
 
