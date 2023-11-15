@@ -9,7 +9,8 @@ export class UserController {
   async all(request: Request, response: Response, next: NextFunction) {
     const users = await this.userRepository.find();
     if (!users) {
-      return response.status(204).json({ message: "No employees found!" });
+      response.status(204);
+      return { message: "No employees found!" };
     }
     response.status(200).json(users);
   }
@@ -22,42 +23,70 @@ export class UserController {
     });
 
     if (!user) {
-      return response.status(404).json({ message: `No emp` });
+      response.status(404);
+      return { message: "User not found" };
     }
-    return response.json(user);
+    response.json(user);
   }
 
-  async save(request: Request, response: Response, next: NextFunction) {
+  async registerUser(request: Request, response: Response, next: NextFunction) {
     const { firstname, lastname, username, password } = request.body;
-    if (!firstname || !lastname || !username || !password) {
-      return response.status(400).json({
-        message: "Firstname, Lastname, Username and Password are required!",
-      });
-    }
-    const duplicate = await this.userRepository.find({
-      where: {
-        username: username,
-      },
-    });
-    console.log("Duplicate: ", duplicate);
-    // if (duplicate) {
-    //   return response.status(409).json({ message: "Username already exists!" });
-    // }
 
-    try {
-      const hashedpwd = await bcrypt.hash(password, 10);
-      const user = Object.assign(new User(), {
-        firstname,
-        lastname,
-        username,
-        password: hashedpwd,
-        refreshToken: 'asd'
-      });
-      const savedUser = await this.userRepository.save(user);
-      console.log("Saved user: ", savedUser);
-      response.status(201).json({ success: `New user ${savedUser} created!` });
-    } catch (error) {
-      response.status(500).json({ message: error.message });
+    if (!firstname || !lastname || !username || !password) {
+      response.status(400);
+      return "Firstname, Lastname, Username, and Password are required!";
+    }
+
+    const duplicate = await this.userRepository.findOne({
+      where: { username },
+    });
+
+    console.log("Duplicate: ", duplicate);
+
+    if (duplicate) {
+      response.status(409);
+      return { message: "User already exist" };
+    }
+
+    const hashedpwd = await bcrypt.hash(password, 10);
+    const user = Object.assign(new User(), {
+      firstname,
+      lastname,
+      username,
+      password: hashedpwd,
+      refreshToken: "asd",
+    });
+
+    const savedUser = await this.userRepository.save(user);
+
+    console.log("Saved user: ", savedUser);
+
+    return savedUser;
+  }
+
+  async handleLogin(request: Request, response: Response, next: NextFunction) {
+    const { username, password } = request.body;
+    if (!username || !password) {
+      response.status(400);
+      return { message: "Username and password are required" };
+    }
+
+    const user = await this.userRepository.findOne({
+      where: { username },
+    });
+
+    if (!user) {
+      response.status(401);
+      return { message: "Unathorized" };
+    }
+
+    const match = await bcrypt.compare(password, user.password);
+    if (match) {
+        // create JWTs
+      return `User: ${user.username} is logged in`;
+    } else {
+      response.status(401);
+      return { message: "Unathorized" };
     }
   }
 
