@@ -4,15 +4,19 @@ Testowanie i jakość oprogramowania
 Krzysztof Książek
 # Temat projektu
 
+System zarządzania zasobami żywnościowymi oraz dietą
+
 # Opis projektu
 
 # Uruchomienie projektu
 
-1. Run `npm i` command
-2. Setup database settings inside `data-source.ts` file
-3. Run `npm start` command
+1. Uruchom komendę `npm i` w terminalu 
+2. Skonfiguruj bazę danych wewnątrz pliku `src/config/connectDatabase.ts`
+3. Uruchom komendę `npm run start` lub `npm run dev`
 
 # Uruchomienie testów jednostkowych i integracyjnych
+
+1. Uruchom komendę `npm run test` aby rozpocząć testy
 
 # Dokumentacja API
 

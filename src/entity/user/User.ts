@@ -1,18 +1,56 @@
-import {Entity, PrimaryGeneratedColumn, Column} from "typeorm"
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToOne,
+  JoinColumn,
+} from "typeorm";
 
-@Entity()
+import { UserDetails } from "./UserDetails";
+
+export enum UserRole {
+  USER = "User",
+  MODERATOR = "Moderator",
+  ADMIN = "Admin",
+}
+
+@Entity("user")
 export class User {
+  // @PrimaryGeneratedColumn("uuid")
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @PrimaryGeneratedColumn()
-    id: number
+  @Column()
+  firstname: string;
 
-    @Column()
-    firstName: string
+  @Column()
+  lastname: string;
 
-    @Column()
-    lastName: string
+  @Column()
+  username: string;
 
-    @Column()
-    age: number
+  @Column()
+  password: string;
 
+  @Column()
+  refreshToken: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  @Column({
+    type: "enum",
+    enum: UserRole,
+    default: UserRole.USER,
+  })
+  role: UserRole;
+
+  @OneToOne(() => UserDetails)
+  @JoinColumn()
+  user_details: UserDetails;
 }
