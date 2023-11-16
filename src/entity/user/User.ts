@@ -50,7 +50,7 @@ export class User {
   })
   role: UserRole;
 
-  @OneToOne(() => UserDetails)
+  @OneToOne(() => UserDetails, { cascade: true, eager: true })
   @JoinColumn()
   user_details: UserDetails;
 }

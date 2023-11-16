@@ -106,3 +106,73 @@ it("Should return an http error 400 bad request when password is not provided", 
   // Then
   expect(response.status).toBe(400);
 });
+
+it("Scenario 1: Should successfully log in a user", async () => {
+  // Given
+  const mockUser = createMockUser();
+  await request(app).post("/register").send({
+    firstname: mockUser.firstname,
+    lastname: mockUser.lastname,
+    username: mockUser.username,
+    password: mockUser.password,
+  });
+  // When
+  const response = await request(app).post("/auth").send({
+    username: mockUser.username,
+    password: "haslo123", // Domyślne hasło z mocka
+  });
+
+  // Then
+  expect(response.status).toBe(200);
+  expect(response.text).toContain(`User: ${mockUser.username} is logged in`);
+});
+
+it("Scenario 2: Should return an http error 400 bad request when username is not provided", async () => {
+  // When
+  const response = await request(app).post("/auth").send({
+    password: "haslo123",
+  });
+
+  // Then
+  expect(response.status).toBe(400);
+  // expect(response.body).toEqual({ message: "Username and password are required" });
+});
+
+it("Scenario 3: Should return an http error 400 bad request when password is not provided", async () => {
+  // When
+  const response = await request(app).post("/auth").send({
+    username: "Krzysiekksi6",
+  });
+
+  // Then
+  expect(response.status).toBe(400);
+  // expect(response.body).toEqual({ message: "Username and password are required" });
+});
+
+it("Scenario 4: Should return an http error 401 unauthorized when username is not found", async () => {
+  // When
+  const response = await request(app).post("/auth").send({
+    username: "NonexistentUser",
+    password: "haslo123",
+  });
+
+  // Then
+  expect(response.status).toBe(401);
+  // expect(response.body).toEqual({ message: "Unauthorized" });
+});
+
+it("Scenario 5: Should return an http error 401 unauthorized when password is incorrect", async () => {
+  // Given
+  const mockUser = createMockUser();
+  await myDataSource.getRepository(User).save(mockUser);
+
+  // When
+  const response = await request(app).post("/auth").send({
+    username: mockUser.username,
+    password: "incorrectPassword",
+  });
+
+  // Then
+  expect(response.status).toBe(401);
+  // expect(response.body).toEqual({ message: "Unauthorized" });
+});

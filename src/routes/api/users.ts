@@ -1,5 +1,6 @@
 import { body, param } from "express-validator";
 import { UserController } from "../../controller/UserController";
+import { UserDetailsController } from "../../controller/UserDetailsController";
 
 const users = [
   {
@@ -40,6 +41,14 @@ const users = [
     route: "/users/:id",
     controller: UserController,
     action: "remove",
+    validation: [param("id").isInt()],
+  },
+
+  {
+    method: "put",
+    route: "/users/:id/details",
+    controller: UserDetailsController,
+    action: "addUserDetails",
     validation: [param("id").isInt()],
   },
 ];

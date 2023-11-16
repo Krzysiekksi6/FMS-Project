@@ -1,10 +1,12 @@
-import { connectDatabase } from "../config/connectDatabase";
-import { NextFunction, Request, Response } from "express";
-import { User } from "../entity/user/User";
 import * as bcrypt from "bcrypt";
+import { NextFunction, Request, Response } from "express";
+import { connectDatabase } from "../config/connectDatabase";
+import { User } from "../entity/user/User";
 
 export class UserController {
   private userRepository = connectDatabase.getRepository(User);
+
+  
 
   async all(request: Request, response: Response, next: NextFunction) {
     const users = await this.userRepository.find();
@@ -23,8 +25,7 @@ export class UserController {
     });
 
     if (!user) {
-      response.status(404);
-      return { message: "User not found" };
+      return response.status(404).json({ message: "User not found" });
     }
     response.json(user);
   }
@@ -33,18 +34,17 @@ export class UserController {
     const { firstname, lastname, username, password } = request.body;
 
     if (!firstname || !lastname || !username || !password) {
-      response.status(400);
-      return "Firstname, Lastname, Username, and Password are required!";
+      return response.status(400).json({
+        message: "Firstname, Lastname, Username, and Password are required!",
+      });
     }
 
     const duplicate = await this.userRepository.findOne({
       where: { username },
     });
 
-
     if (duplicate) {
-      response.status(409);
-      return { message: "User already exist" };
+      return response.status(409).json({ message: "User already exist" });
     }
 
 
@@ -57,17 +57,18 @@ export class UserController {
       refreshToken: process.env.REFRESH_TOKEN_SECRET,
     });
 
+
     const savedUser = await this.userRepository.save(user);
 
-    response.status(201)
-    return savedUser;
+    return response.status(201).json(savedUser);
   }
 
   async handleLogin(request: Request, response: Response, next: NextFunction) {
     const { username, password } = request.body;
     if (!username || !password) {
-      response.status(400);
-      return { message: "Username and password are required" };
+      return response
+        .status(400)
+        .json({ message: "Username and password are required" });
     }
 
     const user = await this.userRepository.findOne({
@@ -75,17 +76,18 @@ export class UserController {
     });
 
     if (!user) {
-      response.status(401);
-      return { message: "Unathorized" };
+      return response.status(401).json({ message: "Unauthorized" });
     }
 
     const match = await bcrypt.compare(password, user.password);
     if (match) {
-        // create JWTs
-      return `User: ${user.username} is logged in`;
+      // create JWTs
+      //   return `User: ${user.username} is logged in`;
+      response
+        .status(200)
+        .json({ message: `User: ${user.username} is logged in` });
     } else {
-      response.status(401);
-      return { message: "Unathorized" };
+      return response.status(401).json({ message: "Unauthorized" });
     }
   }
 
@@ -99,6 +101,8 @@ export class UserController {
     }
     await this.userRepository.remove(userToRemove);
 
-    return `User with _id:${id} has been removed`;
+    return response
+      .status(200)
+      .json({ message: `User with _id:${id} has been removed` });
   }
 }

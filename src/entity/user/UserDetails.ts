@@ -32,4 +32,7 @@ export class UserDetails {
 
   @Column()
   calfCircumference: number;
+
+  @Column({ type: "float4", nullable: true })
+  bmi: number;
 }

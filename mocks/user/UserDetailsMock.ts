@@ -1,4 +1,3 @@
-// tests/mocks/mockUser.ts
 import { UserDetails } from "../../src/entity/user/UserDetails";
 
 export const createMockUserDetails = (): UserDetails => {
@@ -13,5 +12,6 @@ export const createMockUserDetails = (): UserDetails => {
     armCircumference: 30,
     thighCircumference: 50,
     calfCircumference: 35,
+    bmi: 0
   };
 };
