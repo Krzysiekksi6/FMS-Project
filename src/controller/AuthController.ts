@@ -1,4 +1,5 @@
 import * as bcrypt from "bcrypt";
+import * as jwt from "jsonwebtoken";
 import { Request, Response } from "express";
 import { connectDatabase } from "../config/connectDatabase";
 import { User } from "../entity/user/User";
@@ -21,8 +22,28 @@ export class AuthController {
     const match = await bcrypt.compare(password, user.password);
     if (match) {
       // create JWTs
-      //   return `User: ${user.username} is logged in`;
-      res.status(200).json({ message: `User: ${user.username} is logged in` });
+      const accessToken = jwt.sign(
+        { username: user.username },
+        process.env.ACCESS_TOKEN_SECRET,
+        { expiresIn: "45s" }
+      );
+
+      const refreshToken = jwt.sign(
+        { username: user.username },
+        process.env.REFRESH_TOKEN_SECRET,
+        { expiresIn: "1d" }
+      );
+
+      user.refreshToken = refreshToken;
+      await this.userRepository.save(user);
+
+      res.cookie("jwt", refreshToken, {
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000,
+      });
+      res
+        .status(200)
+        .json({ message: `User: ${user.username} is logged in`, accessToken });
     } else {
       return res.status(401).json({ message: "Unauthorized" });
     }

@@ -1,7 +1,8 @@
-import { body, param } from "express-validator";
+import { body } from "express-validator";
 import { RegisterController } from "../../controller/RegisterController";
+import Route from "../../types/Route";
 
-const register = [
+const register: Route[] = [
   {
     method: "post",
     route: "/register",

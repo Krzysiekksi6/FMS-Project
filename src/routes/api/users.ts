@@ -1,14 +1,16 @@
 import { body, param } from "express-validator";
 import { UserController } from "../../controller/UserController";
 import { UserDetailsController } from "../../controller/UserDetailsController";
+import Route from "../../types/Route";
 
-const users = [
+const users: Route[] = [
   {
     method: "get",
     route: "/users",
     controller: UserController,
     action: "all",
     validation: [],
+    secure: true,
   },
   {
     method: "get",
