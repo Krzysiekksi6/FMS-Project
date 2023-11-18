@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import { connectDatabase } from "../config/connectDatabase";
 import { UserDetails } from "../entity/user/UserDetails";
 import { User } from "../entity/user/User";
@@ -6,49 +6,82 @@ export class UserDetailsController {
   private userDetailsRepository = connectDatabase.getRepository(UserDetails);
   private userRepository = connectDatabase.getRepository(User);
 
-  private calculateBMI(weight: number, height: number): number {
-    const heightInMeters = height / 100; // Zamiana wzrostu na metry
-    const bmi = weight / (heightInMeters * heightInMeters);
-    console.log(bmi);
-    return bmi;
-  }
-
-  async addUserDetails(
-    request: Request,
-    response: Response,
-    next: NextFunction
-  ) {
-    const userId = parseInt(request.params.id); // Załóżmy, że masz dostęp do id użytkownika z parametrów ścieżki
-
+  async addUserDetails(request: Request, response: Response) {
     try {
-      const user = await this.userRepository.findOne({
-        where: {
-          id: userId,
-        },
-      });
+      const userId = parseInt(request.params.id);
+      const user = await this.findUserById(userId);
 
       if (!user) {
         return response.status(404).json({ message: "User not found" });
       }
 
       const userDetailsData = request.body;
+      if (!this.isValidUserDetailsData(userDetailsData)) {
+        return response.status(400).json({ message: "Invalid data" });
+      }
+
       const bmi = this.calculateBMI(
         userDetailsData.weight,
         userDetailsData.height
       );
+      const userDetails = this.createUserDetailsEntity(userDetailsData, bmi);
 
-      const userDetails = Object.assign(new UserDetails(), userDetailsData);
-
-      // Przypisz szczegóły użytkownika do użytkownika
       user.user_details = userDetails;
-      user.user_details.bmi = bmi;
 
-      await this.userDetailsRepository.save(userDetails);
-      await this.userRepository.save(user);
+      await this.saveUserDetails(userDetails);
+      await this.saveUser(user);
 
       return response.status(201).json(userDetails);
     } catch (error) {
       return response.status(500).json({ error: error.message });
     }
+  }
+
+  private async findUserById(userId: number): Promise<User | undefined> {
+    return await this.userRepository.findOne({ where: { id: userId } });
+  }
+
+  private isValidUserDetailsData(userDetailsData: any): boolean {
+    const { age, weight, height } = userDetailsData;
+    return age !== undefined && weight !== undefined && height !== undefined;
+  }
+
+  private createUserDetailsEntity(
+    userDetailsData: any,
+    bmi: number
+  ): UserDetails {
+    const userDetails = new UserDetails();
+    Object.assign(userDetails, userDetailsData);
+    userDetails.bmi = bmi;
+    return userDetails;
+  }
+
+  private async saveUserDetails(
+    userDetails: UserDetails
+  ): Promise<UserDetails> {
+    return await this.userDetailsRepository.save(userDetails);
+  }
+
+  private async saveUser(user: User): Promise<User> {
+    return await this.userRepository.save(user);
+  }
+
+  public calculateBMI(weight: number, height: number): number {
+    if (isNaN(weight) || isNaN(height) || weight < 0 || height <= 0) {
+      throw new Error(
+        "Invalid input. Weight must be a positive number, and height must be a positive non-zero number."
+      );
+    }
+
+    const heightInMeters = height / 100;
+
+    if (heightInMeters === 0) {
+      throw new Error(
+        "Invalid input. Height must be a positive non-zero number."
+      );
+    }
+
+    const bmi = weight / (heightInMeters * heightInMeters);
+    return Number(bmi.toFixed(2));
   }
 }

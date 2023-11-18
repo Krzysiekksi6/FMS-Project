@@ -7,7 +7,6 @@ export class UserController {
   private userRepository = connectDatabase.getRepository(User);
 
   
-
   async all(request: Request, response: Response, next: NextFunction) {
     const users = await this.userRepository.find();
     if (!users) {
