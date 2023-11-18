@@ -32,6 +32,10 @@ wzrost, waga
 1. Uruchom komendę `npm run test` aby uruchomić wszystkie testy
 2. Uruchom komendę `npx jest register.test.ts` aby uruchomić pojedyncze testy
 
+# Dodatkowe informacje dla prowadzącego
+
+1. W katalogu głównym folderze `docs/tests` znajdują się wycinki ekranu `.png` przedstawiające uruchomienie testów jednostkowcyh oraz integracyjnych. 
+
 # Dokumentacja API
 
 ## Rejestracja użytkownika
