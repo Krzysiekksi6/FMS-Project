@@ -10,7 +10,6 @@ const users: Route[] = [
     controller: UserController,
     action: "all",
     validation: [],
-    secure: true,
   },
   {
     method: "get",
@@ -18,6 +17,7 @@ const users: Route[] = [
     controller: UserController,
     action: "one",
     validation: [param("id").isInt()],
+    secure: true,
   },
   {
     method: "delete",

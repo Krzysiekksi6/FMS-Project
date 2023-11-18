@@ -1,6 +1,6 @@
 import { body } from "express-validator";
-import { AuthController } from "../../controller/AuthController";
-import Route from "../../types/Route";
+import { AuthController } from "../controller/AuthController";
+import Route from "../types/Route";
 
 const auth: Route[] = [
   {

@@ -1,8 +1,6 @@
+import register from "./register";
+import auth from "./auth";
+import refresh from "./refresh";
 import users from "./api/users";
-import register from "./api/register";
-import auth from "./api/auth";
-export const Routes = [
-    ...users,
-    ...register,
-    ...auth
-];
+import logout from "./logout";
+export const Routes = [...register, ...auth, ...refresh, ...logout, ...users];

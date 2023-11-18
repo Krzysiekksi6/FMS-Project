@@ -1,6 +1,6 @@
 import { body } from "express-validator";
-import { RegisterController } from "../../controller/RegisterController";
-import Route from "../../types/Route";
+import { RegisterController } from "../controller/RegisterController";
+import Route from "../types/Route";
 
 const register: Route[] = [
   {
