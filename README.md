@@ -23,8 +23,9 @@ wzrost, waga
 
 1. Uruchom komendę `npm i` w terminalu 
 2. Skonfiguruj bazę danych wewnątrz pliku `src/config/connectDatabase.ts`
-3. Uruchom komendę `docker compose up -d`
+3. Uruchom komendę `docker compose up -d` aby uruchomić instancję bazy danych w tle
 4. Uruchom komendę `npm run start` lub `npm run dev`
+5. Uruchom komendę `docker compose down` aby zatrzymać działanie instancji bazy danych
 
 # Uruchomienie testów jednostkowych i integracyjnych
 
@@ -142,7 +143,19 @@ Aktualizuje  szczegóły użytkownika o określonym identyfikatorze.
 | TC_BMI_004   | Poprawne obliczenie BMI dla niedowagi                    | 1. Utwórz i zarejestruj nowego użytkownika. <br>2. Wykonaj żądanie POST na /user-details/{user.id} z danymi szczegółów użytkownika, zawierającymi weight i height dla osoby z niedowagą.               | Odpowiedź z kodem 201 i obliczonym BMI w szczegółach użytkownika mniejszym niż 18.5.                                                                                      |
 | TC_BMI_005   | Poprawne obliczenie BMI dla nadwagi                      | 1. Utwórz i zarejestruj nowego użytkownika. <br>2. Wykonaj żądanie POST na /user-details/{user.id} z danymi szczegółów użytkownika, zawierającymi weight i height dla osoby z nadwagą.                | Odpowiedź z kodem 201 i obliczonym BMI w szczegółach użytkownika większym niż 24.9.                                                                                        |
 | TC_BMI_006   | Obsługa zerowej wysokości                                | 1. Utwórz i zarejestruj nowego użytkownika. <br>2. Wykonaj żądanie POST na /user-details/{user.id} z danymi szczegółów użytkownika, gdzie height wynosi 0.                        | Oczekiwane zgłoszenie błędu z komunikatem "Invalid input. Weight must be a positive number, and height must be a positive non-zero number."                               |
-                                               |
+| TC_REG_AUTH_001   | Rejestracja i logowanie użytkownika                                | 1. Utwórz i zarejestruj nowego użytkownika. <br>2. Wykonaj żądanie POST na /auth z danymi logowania (username i password).                        | Odpowiedź z kodem 200 i potwierdzeniem zalogowania użytkownika.          |
+| TC_REG_AUTH_002   | Odmowa dostępu dla błędnych danych logowania                      | 1. Utwórz i zarejestruj nowego użytkownika. <br>2. Wykonaj żądanie POST na /auth z błędnymi danymi logowania (niepoprawne hasło).                 | Odpowiedź z kodem 401 Unauthorized i komunikatem "Unauthorized".       |
+| TC_REG_AUTH_003   | Rejestracja użytkownika i pobranie go po ID                         | 1. Utwórz i zarejestruj nowego użytkownika. <br>2. Wykonaj żądanie GET na /users/{user.id}.                                              | Odpowiedź z kodem 200 i szczegółami zarejestrowanego użytkownika.       |
+| TC_REG_AUTH_004   | Odmowa dostępu dla nieistniejącego ID po rejestracji                | 1. Utwórz i zarejestruj nowego użytkownika. <br>2. Wykonaj żądanie GET na /users/{nonExistentUserId}.                                  | Odpowiedź z kodem 404 Not Found i komunikatem "User not found".        |
+| TC_REG_USER_005   | Odmowa dostępu do nieistniejącego użytkownika po rejestracji        | 1. Utwórz i zarejestruj nowego użytkownika. <br>2. Wykonaj żądanie DELETE na /users/{nonExistentUserId}.                                | Odpowiedź z kodem 404 Not Found i komunikatem "User with _id:{nonExistentUserId} not exist".                                           |
+| TC_REG_USER_006   | Rejestracja 3 różnych użytkowników i pobranie listy wszystkich użytkowników | 1. Utwórz i zarejestruj trzech różnych użytkowników. <br>2. Wykonaj żądanie GET na /users.                                          | Odpowiedź z kodem 200 i listą trzech zarejestrowanych użytkowników.  |
+| TC_REG_USER_007   | Odmowa rejestracji użytkowników o tym samym username                | 1. Utwórz i zarejestruj trzech użytkowników, z których dwóch ma to samo username. <br>2. Sprawdź odpowiedzi na żądania rejestracji dla każdego z użytkowników. | Odpowiedzi z kodem 409 Conflict dla dwóch użytkowników o tym samym username.                                                          |
+| TC_REG_USER_008   | Rejestracja użytkownika i usunięcie go                               | 1. Utwórz i zarejestruj nowego użytkownika. <br>2. Wykonaj żądanie DELETE na /users/{user.id}.                                       | Odpowiedź z kodem 200 i komunikatem "User with _id:{userId} has been removed".                                                      |
+| TC_REG_USER_DETAILS_002 | Rejestracja użytkownika i dodanie szczegółów                      | 1. Utwórz i zarejestruj nowego użytkownika. <br>2. Wykonaj żądanie PUT na /users/{user.id}/details z danymi szczegółów użytkownika.         | Odpowiedź z kodem 201 i obliczonym BMI w szczegółach użytkownika.        |
+| TC_REG_USER_DETAILS_003 | Odmowa dodania nieprawidłowych szczegółów użytkownika              | 1. Utwórz i zarejestruj nowego użytkownika z nieprawidłowymi danymi szczegółów. <br>2. Wykonaj żądanie PUT na /users/{user.id}/details z danymi szczegółów użytkownika. | Odpowiedź z kodem 400 i komunikatem "Invalid data".                    |
+
+                                               
+                                               
 
 
 

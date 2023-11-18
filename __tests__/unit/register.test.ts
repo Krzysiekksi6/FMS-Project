@@ -1,3 +1,4 @@
+import { Server } from "http";
 import * as request from "supertest";
 import app from "../../src/app";
 import config from "../../src/config";
@@ -6,10 +7,10 @@ import { User } from "../../src/entity/user/User";
 import { createMockUser } from "../../mocks/user/UserMock";
 
 
-let server;
+let server: Server;
 let myDataSource = connectDatabase;
 
-describe("User Authentication and Registration API", () => {
+describe("Unit Tests", () => {
   beforeEach(async () => {
     await myDataSource.connect();
     await myDataSource.synchronize(true);

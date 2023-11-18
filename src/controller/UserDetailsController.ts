@@ -6,6 +6,23 @@ export class UserDetailsController {
   private userDetailsRepository = connectDatabase.getRepository(UserDetails);
   private userRepository = connectDatabase.getRepository(User);
 
+  async removeUserDetails(request: Request, response: Response) {
+    try {
+      const userId = parseInt(request.params.id);
+      const user = await this.findUserById(userId);
+      if (!user) {
+        return response.status(404).json({ message: "User not found" });
+      }
+     
+
+      return response.status(200).json({
+        message: `Details for user with id ${userId} have been removed`,
+      });
+    } catch (error) {
+      return response.status(500).json({ error: error.message });
+    }
+  }
+
   async addUserDetails(request: Request, response: Response) {
     try {
       const userId = parseInt(request.params.id);

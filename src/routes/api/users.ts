@@ -51,6 +51,14 @@ const users = [
     action: "addUserDetails",
     validation: [param("id").isInt()],
   },
+
+  {
+    method: "delete",
+    route: "/users/:id/details",
+    controller: UserDetailsController,
+    action: "removeUserDetails",
+    validation: [param("id").isInt()],
+  },
 ];
 
 export default users;

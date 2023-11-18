@@ -96,7 +96,7 @@ export class UserController {
     const userToRemove = await this.userRepository.findOneBy({ id });
 
     if (!userToRemove) {
-      throw Error(`User with _id:${id} not exist`);
+      return response.status(404).json({message: `User with _id:${id} not exist`});
     }
     await this.userRepository.remove(userToRemove);
 
