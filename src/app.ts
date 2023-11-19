@@ -10,6 +10,8 @@ import { verifyJWT } from "./middleware/verifyJWT";
 import { verifyRoles } from "./middleware/verifyRoles";
 import { credentials } from "./middleware/credentials";
 import { corsOptions } from "./config/corsOptions";
+import swaggerDocs from "./utils/swagger";
+import config from "./config";
 
 const app = express();
 app.use(morgan("tiny"));
@@ -46,6 +48,7 @@ Routes.forEach((route) => {
     }
   );
 });
+swaggerDocs(app, config.port)
 app.use(handleError);
 
 export default app;
