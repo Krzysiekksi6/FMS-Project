@@ -4,7 +4,7 @@ interface VerivyRoleRequest extends Request {
   roles?: string[];
 }
 
-const verifyRoles = (...allowedRoles) => {
+export const verifyRoles = (...allowedRoles) => {
   return (req: VerivyRoleRequest, res: Response, next: NextFunction) => {
     if (!req?.roles) {
       return res.sendStatus(401);

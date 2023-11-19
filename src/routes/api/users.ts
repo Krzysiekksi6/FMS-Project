@@ -11,6 +11,9 @@ const users: Route[] = [
     controller: UserController,
     action: "all",
     validation: [],
+    secure: true,
+    roles: [UserRole.USER]
+
   },
   {
     method: "get",
