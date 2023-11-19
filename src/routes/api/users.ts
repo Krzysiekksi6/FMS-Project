@@ -2,6 +2,7 @@ import { body, param } from "express-validator";
 import { UserController } from "../../controller/UserController";
 import { UserDetailsController } from "../../controller/UserDetailsController";
 import Route from "../../types/Route";
+import { UserRole } from "../../enums/UserRole";
 
 const users: Route[] = [
   {
@@ -18,6 +19,7 @@ const users: Route[] = [
     action: "one",
     validation: [param("id").isInt()],
     secure: true,
+    roles: [UserRole.ADMIN, UserRole.MODERATOR]
   },
   {
     method: "delete",

@@ -21,9 +21,16 @@ export class AuthController {
 
     const match = await bcrypt.compare(password, user.password);
     if (match) {
+      const roles = Object.values(user.roles);
       // create JWTs
       const accessToken = jwt.sign(
-        { username: user.username },
+        {
+          UserInfo: {
+            username: user.username,
+            roles: roles,
+          },
+        },
+
         process.env.ACCESS_TOKEN_SECRET,
         { expiresIn: "45s" }
       );
@@ -41,7 +48,7 @@ export class AuthController {
         httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000,
         sameSite: "none",
-        secure: true
+        secure: true,
       });
       res
         .status(200)

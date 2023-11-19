@@ -31,12 +31,18 @@ export class RefreshTokenController {
         if (err || user.username !== decoded.username) {
           return res.sendStatus(403);
         }
+        const roles = Object.values(user.roles);
         const accessToken = jwt.sign(
-          { username: decoded.username },
+          {
+            UserInfo: {
+              username: decoded.username,
+              roles: roles,
+            },
+          },
           process.env.ACCESS_TOKEN_SECRET,
           { expiresIn: "45s" }
         );
-        res.json({accessToken});
+        res.json({ accessToken });
       }
     );
   }

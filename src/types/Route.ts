@@ -7,6 +7,7 @@ type Route = {
   action: string;
   validation: RequestHandler[];
   secure?: boolean;
+  roles?: string[];
 };
 
 export default Route;

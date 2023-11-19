@@ -9,12 +9,7 @@ import {
 } from "typeorm";
 
 import { UserDetails } from "./UserDetails";
-
-export enum UserRole {
-  USER = "User",
-  MODERATOR = "Moderator",
-  ADMIN = "Admin",
-}
+import { UserRole } from "../../enums/UserRole";
 
 @Entity("user")
 export class User {
@@ -34,7 +29,7 @@ export class User {
   @Column()
   password: string;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   refreshToken: string;
 
   @CreateDateColumn()
@@ -46,9 +41,10 @@ export class User {
   @Column({
     type: "enum",
     enum: UserRole,
-    default: UserRole.USER,
+    array: true,
+    default: [UserRole.USER],
   })
-  role: UserRole;
+  roles: UserRole[];
 
   @OneToOne(() => UserDetails, { cascade: true, eager: true })
   @JoinColumn()

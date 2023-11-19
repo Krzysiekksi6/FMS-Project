@@ -26,9 +26,8 @@ export class LogoutController {
     if (!user) {
       res.clearCookie("jwt", {
         httpOnly: true,
-        //secure: true, //- only in production and https
+        secure: true,
         sameSite: "none",
-        maxAge: 24 * 60 * 60 * 1000,
       });
       return res.sendStatus(204);
     }
@@ -37,10 +36,9 @@ export class LogoutController {
 
     await this.userRepository.save(user);
     res.clearCookie("jwt", {
-        httpOnly: true,
-       // secure: true, //- only in production and https
-        sameSite: "none",
-        maxAge: 24 * 60 * 60 * 1000,
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
     });
     res.sendStatus(204);
   }
