@@ -11,9 +11,9 @@ const users: Route[] = [
     controller: UserController,
     action: "all",
     validation: [],
-    secure: true,
-    roles: [UserRole.USER]
-
+    secure: false,
+    // secure: true,
+    // roles: [UserRole.MODERATOR],
   },
   {
     method: "get",
@@ -22,7 +22,7 @@ const users: Route[] = [
     action: "one",
     validation: [param("id").isInt()],
     secure: true,
-    roles: [UserRole.ADMIN, UserRole.MODERATOR]
+    roles: [UserRole.ADMIN, UserRole.MODERATOR],
   },
   {
     method: "delete",

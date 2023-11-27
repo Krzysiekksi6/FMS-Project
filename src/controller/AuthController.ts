@@ -21,7 +21,7 @@ export class AuthController {
 
     const match = await bcrypt.compare(password, user.password);
     if (match) {
-      const roles = Object.values(user.roles);
+      const roles = Object.values(user.roles).filter(Boolean);
       // create JWTs
       const accessToken = jwt.sign(
         {
@@ -52,7 +52,7 @@ export class AuthController {
       });
       res
         .status(200)
-        .json({ message: `User: ${user.username} is logged in`, accessToken });
+        .json({ message: `User: ${user.username} is logged in`, accessToken, roles });
     } else {
       return res.status(401).json({ message: "Unauthorized" });
     }
