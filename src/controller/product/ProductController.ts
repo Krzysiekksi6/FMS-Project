@@ -106,7 +106,7 @@ export class ProductController {
     foundProduct.carbs = carbs;
     foundProduct.fat = fat;
     foundProduct.shelfLifeDays = shelfLifeDays;
-    foundProduct.productCategoryId = foundCategory;
+    foundProduct.productCategoryId = foundCategory.id;
 
     const updatedProduct = await this.productRepository.save(foundProduct);
     return res.status(200).json(updatedProduct);
