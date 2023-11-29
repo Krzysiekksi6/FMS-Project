@@ -11,7 +11,7 @@ export class ProductController {
   async getAllProducts(req: Request, res: Response) {
     const products = await this.productRepository.find();
     if (!products) {
-      return res.status(204).json({ message: "No products found" });
+      return res.status(404).json({ message: "No products found" });
     }
     res.status(200).json(products);
   }
@@ -19,19 +19,29 @@ export class ProductController {
   async getOneProduct(req: Request, res: Response) {
     const id = parseInt(req.params.id);
 
-    const product = await this.productRepository.findOne({
-      where: { id },
+    const product = await this.productRepository.findOneBy({
+      id,
     });
 
+    console.log(product);
+
     if (!product) {
-      return res.status(204).json({ message: `Product ${id} not found` });
+      return res.status(404).json({ message: `Product ${id} not found` });
     }
     return res.status(200).json(product);
   }
 
   async addProduct(req: Request, res: Response) {
-    const { name, calories, protein, carbs, fat, shelfLifeDays, categoryName } =
-      req.body;
+    console.log("Add");
+    const {
+      name,
+      calories,
+      protein,
+      carbs,
+      fat,
+      shelfLifeDays,
+      productCategoryId: categoryId,
+    } = req.body;
 
     this.validProductData(
       res,
@@ -41,13 +51,15 @@ export class ProductController {
       carbs,
       fat,
       shelfLifeDays,
-      categoryName
+      categoryId
     );
+    console.log("Searching...");
     const foundCategory = await this.productCategoryRepository.findOne({
       where: {
-        name: categoryName.toLowerCase(),
+        id: categoryId,
       },
     });
+    console.log("Searching...");
 
     if (!foundCategory) {
       return res.status(404).json({ message: "Invalid category name" });
@@ -60,7 +72,7 @@ export class ProductController {
       carbs,
       fat,
       shelfLifeDays,
-      productCategoryId: foundCategory.id,
+      productCategoryId: categoryId,
     });
 
     const savedProduct = await this.productRepository.save(newProduct);
@@ -69,8 +81,15 @@ export class ProductController {
 
   async editProduct(req: Request, res: Response) {
     const id = parseInt(req.params.id);
-    const { name, calories, protein, carbs, fat, shelfLifeDays, categoryName } =
-      req.body;
+    const {
+      name,
+      calories,
+      protein,
+      carbs,
+      fat,
+      shelfLifeDays,
+      productCategoryId: categoryId,
+    } = req.body;
 
     this.validProductData(
       res,
@@ -80,7 +99,7 @@ export class ProductController {
       carbs,
       fat,
       shelfLifeDays,
-      categoryName
+      categoryId
     );
 
     const foundProduct = await this.productRepository.findOne({
@@ -88,12 +107,14 @@ export class ProductController {
     });
 
     if (!foundProduct) {
-      return res.status(404).json({ message: `Product with _id: ${id} not found` });
+      return res
+        .status(404)
+        .json({ message: `Product with _id: ${id} not found` });
     }
 
     const foundCategory = await this.productCategoryRepository.findOne({
       where: {
-        name: categoryName.toLowerCase(),
+        id: categoryId,
       },
     });
 
@@ -107,9 +128,12 @@ export class ProductController {
     foundProduct.carbs = carbs;
     foundProduct.fat = fat;
     foundProduct.shelfLifeDays = shelfLifeDays;
-    foundProduct.productCategoryId = foundCategory.id;
+    foundProduct.productCategoryId = categoryId;
 
-    const updatedProduct = await this.productRepository.save(foundProduct);
+    const updatedProduct = await this.productRepository.update(
+      id,
+      foundProduct
+    );
     return res.status(200).json(updatedProduct);
   }
 
@@ -119,7 +143,7 @@ export class ProductController {
     const productToRemove = await this.productRepository.findOneBy({ id });
     if (!productToRemove) {
       return res
-        .status(204)
+        .status(404)
         .json({ message: `Product with _id:${id} not exist` });
     }
     const removedProduct = await this.productRepository.remove(productToRemove);
@@ -138,7 +162,7 @@ export class ProductController {
     carbs: number,
     fat: number,
     shelfLifeDays: number,
-    categoryName: string
+    categoryId: number
   ) {
     if (
       !name ||
@@ -147,7 +171,7 @@ export class ProductController {
       !carbs ||
       !fat ||
       !shelfLifeDays ||
-      !categoryName
+      !categoryId
     ) {
       return res.status(400).json({
         message: `Name, Caliories, Protein, Carbs, Fat, Shelf Life Days and Category Name are required!`,

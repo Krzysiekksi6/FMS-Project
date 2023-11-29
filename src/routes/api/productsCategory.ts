@@ -35,7 +35,7 @@ const productsCategory: Route[] = [
     method: "put",
     route: "/productsCategory/:id/edit",
     controller: ProductCategoryController,
-    action: "addCategory",
+    action: "editCategory",
     validation: [body("name").isString()],
     secure: false,
     // roles: []

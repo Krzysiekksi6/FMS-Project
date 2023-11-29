@@ -6,10 +6,10 @@ export class ProductCategoryController {
   private productCategoryRepository =
     connectDatabase.getRepository(ProductCategory);
 
-  async getAllCategories(res: Response) {
+  async getAllCategories(req: Request, res: Response) {
     const categories = await this.productCategoryRepository.find();
     if (!categories) {
-      return res.status(204).json({ message: "No categories found!" });
+      return res.status(404).json({ message: "No categories found!" });
     }
     res.status(200).json(categories);
   }
@@ -20,7 +20,7 @@ export class ProductCategoryController {
     const category = await this.productCategoryRepository.findOneBy({ id });
     if (!category) {
       return res
-        .status(204)
+        .status(404)
         .json({ message: `Category with _id ${id} not found` });
     }
     return res.status(200).json(category);
@@ -49,15 +49,16 @@ export class ProductCategoryController {
 
     if (!foundCategory) {
       return res
-        .status(204)
+        .status(404)
         .json({ message: `Category with _id: ${id} not found` });
     }
 
     foundCategory.name = name;
-    const updatedCategory = await this.productCategoryRepository.save(
+    await this.productCategoryRepository.update(
+      id,
       foundCategory
     );
-    return res.status(200).json(updatedCategory);
+    return res.status(200).json(foundCategory);
   }
   async removeCategory(req: Request, res: Response) {
     const id = parseInt(req.params.id);
@@ -67,7 +68,7 @@ export class ProductCategoryController {
 
     if (!categoryToRemove) {
       return res
-        .status(204)
+        .status(404)
         .json({ message: `Category with _id:${id} not exist` });
     }
 

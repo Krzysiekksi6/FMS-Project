@@ -24,27 +24,27 @@ const products: Route[] = [
   },
   {
     method: "post",
-    route: "/product",
+    route: "/products",
     controller: ProductController,
     action: "addProduct",
-    validation: [body("name").isString],
+    validation: [],
     secure: false,
     // roles: []
   },
   {
     method: "put",
-    route: "/product/:id/edit",
+    route: "/products/:id/edit",
     controller: ProductController,
     action: "editProduct",
-    validation: [param("id").isInt(), body("name").isString],
+    validation: [param("id").isInt(), body("name").isString()],
     secure: false,
     // roles: []
   },
   {
     method: "delete",
-    route: "/product/:id/delete",
+    route: "/products/:id/delete",
     controller: ProductController,
-    action: "productToRemove",
+    action: "removeProduct",
     validation: [param("id").isInt()],
     secure: false,
     // roles: []
@@ -53,13 +53,3 @@ const products: Route[] = [
 
 export default products;
 
-// {
-//     method: "",
-//     route: "/",
-//     controller: ,
-//     action: "",
-//     validation: [],
-//     secure: false,
-//     // roles: []
-
-// }
