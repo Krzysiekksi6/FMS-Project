@@ -13,7 +13,6 @@ export class UserDetailsController {
       if (!user) {
         return response.status(404).json({ message: "User not found" });
       }
-     
 
       return response.status(200).json({
         message: `Details for user with id ${userId} have been removed`,
@@ -41,7 +40,17 @@ export class UserDetailsController {
         userDetailsData.weight,
         userDetailsData.height
       );
-      const userDetails = this.createUserDetailsEntity(userDetailsData, bmi);
+
+      const bmr = this.calculateBMR(
+        userDetailsData.weight,
+        userDetailsData.height,
+        userDetailsData.age
+      );
+      const userDetails = this.createUserDetailsEntity(
+        userDetailsData,
+        bmi,
+        bmr
+      );
 
       user.user_details = userDetails;
 
@@ -65,11 +74,13 @@ export class UserDetailsController {
 
   private createUserDetailsEntity(
     userDetailsData: any,
-    bmi: number
+    bmi: number,
+    bmr: number
   ): UserDetails {
     const userDetails = new UserDetails();
     Object.assign(userDetails, userDetailsData);
     userDetails.bmi = bmi;
+    userDetails.bmr = bmr;
     return userDetails;
   }
 
@@ -83,6 +94,15 @@ export class UserDetailsController {
     return await this.userRepository.save(user);
   }
 
+  private heightInMeters(heightInCm: number): number {
+    if (isNaN(heightInCm) || heightInCm <= 0) {
+      throw new Error(
+        "Invalid input. Height must be a positive non-zero number."
+      );
+    }
+    return heightInCm / 100;
+  }
+
   public calculateBMI(weight: number, height: number): number {
     if (isNaN(weight) || isNaN(height) || weight < 0 || height <= 0) {
       throw new Error(
@@ -90,15 +110,28 @@ export class UserDetailsController {
       );
     }
 
-    const heightInMeters = height / 100;
+    const convertedHeight = this.heightInMeters(height);
 
-    if (heightInMeters === 0) {
+    const bmi = weight / (convertedHeight * convertedHeight);
+    return Number(bmi.toFixed(2));
+  }
+
+  public calculateBMR(weight: number, height: number, age: number): number {
+    if (
+      isNaN(weight) ||
+      isNaN(height) ||
+      isNaN(age) ||
+      weight <= 0 ||
+      height <= 0 ||
+      age <= 0
+    ) {
       throw new Error(
-        "Invalid input. Height must be a positive non-zero number."
+        "Invalid input. Weight, height, age must be a positive non-zero number."
       );
     }
 
-    const bmi = weight / (heightInMeters * heightInMeters);
-    return Number(bmi.toFixed(2));
+    const bmr = 10 * weight + 6.25 * height - 5 * age + 5;
+
+    return bmr;
   }
 }

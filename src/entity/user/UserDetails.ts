@@ -35,4 +35,7 @@ export class UserDetails {
 
   @Column({ type: "float4", nullable: true })
   bmi: number;
+
+  @Column({ type: "float4", nullable: true })
+  bmr: number;
 }

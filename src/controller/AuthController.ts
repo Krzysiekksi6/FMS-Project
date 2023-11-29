@@ -52,7 +52,14 @@ export class AuthController {
       });
       res
         .status(200)
-        .json({ message: `User: ${user.username} is logged in`, accessToken, roles });
+        .json({
+          message: `User: ${user.username} is logged in`,
+          accessToken,
+          roles,
+          firstname: user.firstname,
+          id: user.id,
+          userDetails: user.user_details,
+        });
     } else {
       return res.status(401).json({ message: "Unauthorized" });
     }
