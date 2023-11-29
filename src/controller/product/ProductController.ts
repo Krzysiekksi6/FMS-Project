@@ -8,7 +8,7 @@ export class ProductController {
   private productCategoryRepository =
     connectDatabase.getRepository(ProductCategory);
 
-  async getAllProducts(res: Response) {
+  async getAllProducts(req: Request, res: Response) {
     const products = await this.productRepository.find();
     if (!products) {
       return res.status(204).json({ message: "No products found" });
@@ -26,6 +26,7 @@ export class ProductController {
     if (!product) {
       return res.status(204).json({ message: `Product ${id} not found` });
     }
+    return res.status(200).json(product);
   }
 
   async addProduct(req: Request, res: Response) {
@@ -87,7 +88,7 @@ export class ProductController {
     });
 
     if (!foundProduct) {
-      return res.status(404).json({ message: `Product ${id} not found` });
+      return res.status(404).json({ message: `Product with _id: ${id} not found` });
     }
 
     const foundCategory = await this.productCategoryRepository.findOne({
