@@ -23,8 +23,6 @@ export class ProductController {
       id,
     });
 
-    console.log(product);
-
     if (!product) {
       return res.status(404).json({ message: `Product ${id} not found` });
     }
@@ -32,7 +30,6 @@ export class ProductController {
   }
 
   async addProduct(req: Request, res: Response) {
-    console.log("Add");
     const {
       name,
       calories,
@@ -53,13 +50,11 @@ export class ProductController {
       shelfLifeDays,
       categoryId
     );
-    console.log("Searching...");
     const foundCategory = await this.productCategoryRepository.findOne({
       where: {
         id: categoryId,
       },
     });
-    console.log("Searching...");
 
     if (!foundCategory) {
       return res.status(404).json({ message: "Invalid category name" });

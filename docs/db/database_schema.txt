@@ -1,0 +1,144 @@
+Table user {
+  id number [primary key]
+  username string
+  password string
+  refresh_token string
+  created_at Date
+  updated_at Date
+  role_id number [ref: > user_role.id]
+  inventory_id number [ref: > inventory.id]
+}
+
+Table user_details {
+  id number [primary key]
+  user_id number [ref: - user.id]
+  age number
+  weight number
+  height number
+  chest_circumference number
+  waist_circumference number
+  hip_circumference number
+  arm_circumference number
+  thigh_circumference number
+  calf_circumference number
+}
+
+Table user_role {
+  id number [primary key]
+  name string [primary key]
+}
+
+Table product {
+  id number [primary key]
+  name string
+  calories number
+  protein number
+  carbs number
+  fat number
+  shelf_life_days number
+  diet_category_id number [ref: > diet_category.id]
+  product_category_id number [ref: > product_category.id]
+}
+
+Table product_category {
+  id number [primary key]
+  name string
+  description string
+}
+
+Table diet_category {
+  id number [primary key]
+  name string
+  description string
+}
+
+Table inventory {
+  id number [primary key]
+  user_id number [ref: > user.id]
+}
+
+Table inventory_item {
+  id number [primary key]
+  inventory_id number [ref: > inventory.id]
+  product_id number [ref: > product.id]
+  purchase_date Date
+  expiry_date Date [note: "Obliczane na podstawie daty zakupu i shelf_life_days z produktu"]
+}
+
+Table recipe {
+  id number [primary key]
+  name string
+  calories number [note: "Suma kalorii z produktów"]
+  protein number [note: "Suma białka z produktów"]
+  carbs number [note: "Suma węglowodanów z produktów"]
+  fat number [note: "Suma tłuszczu z produktów"]
+  ingredients ingredient[] [ref: < ingredient.id]
+}
+
+Table ingredient {
+  id number [primary key]
+  product_id number [ref: > product.id]
+  quantity number
+}
+
+Table diet {
+  id number [primary key]
+  name string [note: "Nazwa diety"]
+  description string [note: "Opis diety"]
+  duration_weeks number
+  calories_per_day number
+  diet_category_id number [ref: > diet_category.id]
+}
+
+Table weekly_diet {
+  id number [primary key]
+  diet_id number [ref: > diet.id]
+  week_name string [note: "Nazwa tygodnia"]
+}
+
+Table daily_diet {
+  id number [primary key]
+  weekly_diet_id number [ref: > weekly_diet.id]
+  day_of_week string [note: "Dzień tygodnia"]
+  date Date
+  total_calories number
+  total_protein number
+  total_carbs number
+  total_fat number
+}
+
+Table daily_meal {
+  id number [primary key]
+  meal_id number [ref: > meal.id]
+  recipe_id number [ref: > recipe.id]
+  ingredient_id number [ref: > ingredient.id]
+}
+
+Table meal {
+  id number [primary key]
+  total_calories number
+  total_protein number
+  total_carbs number
+  total_fat number
+  daily_diet_id number [ref: > daily_diet.id]
+}
+
+Table user_diet {
+  id number [primary key]
+  user_id number [ref: - user.id]
+  diet_id number [ref: > diet.id]
+}
+
+Table shopping_list {
+  id number [primary key]
+  user_id number [ref: > user.id]
+  created_at Date
+}
+
+Table shopping_list_item {
+  id number [primary key]
+  shopping_list_id number [ref: > shopping_list.id]
+  product_id number [ref: > product.id]
+  quantity number
+  added_at Date
+}
