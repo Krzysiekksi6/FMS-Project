@@ -1,5 +1,13 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import { ProductCategory } from "./ProductCategory";
+import { InventoryItem } from "../inventory/InventoryItem";
 
 @Entity("product")
 export class Product {
@@ -25,6 +33,10 @@ export class Product {
   shelfLifeDays: number;
 
   @ManyToOne(() => ProductCategory, (category) => category.products)
-  @JoinColumn({name: "product_category_id"})
+  
+  @JoinColumn({ name: "product_category_id" })
   productCategoryId: number;
+
+  @OneToMany(() => InventoryItem, (inventoryItem) => inventoryItem.product)
+  inventoryItems: InventoryItem[];
 }

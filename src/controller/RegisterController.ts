@@ -2,9 +2,11 @@ import * as bcrypt from "bcrypt";
 import { Request, Response } from "express";
 import { connectDatabase } from "../config/connectDatabase";
 import { User } from "../entity/user/User";
+import { Inventory } from "../entity/inventory/Inventory";
 
 export class RegisterController {
   private userRepository = connectDatabase.getRepository(User);
+  private userInventoryRepository = connectDatabase.getRepository(Inventory);
 
   async handleNewUser(req: Request, res: Response) {
     const { firstname, lastname, username, password } = req.body;
@@ -23,7 +25,16 @@ export class RegisterController {
 
     const savedUser = await this.userRepository.save(user);
 
-    return res.status(201).json(savedUser);
+    const inventory = Object.assign(new Inventory(), {
+      user: savedUser,
+      items: [],
+    });
+
+    await this.userInventoryRepository.save(inventory);
+
+    return res
+      .status(201)
+      .json({ user: savedUser, inventory: savedUser.inventory });
   }
 
   private validUserData(

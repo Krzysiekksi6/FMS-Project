@@ -10,6 +10,7 @@ import {
 
 import { UserDetails } from "./UserDetails";
 import { UserRole } from "../../enums/UserRole";
+import { Inventory } from "../inventory/Inventory";
 
 @Entity("user")
 export class User {
@@ -45,6 +46,9 @@ export class User {
     default: [UserRole.USER],
   })
   roles: UserRole[];
+
+  @OneToOne(() => Inventory, (inventory) => inventory.user)
+  inventory: Inventory;
 
   @OneToOne(() => UserDetails, { cascade: true, eager: true })
   @JoinColumn()

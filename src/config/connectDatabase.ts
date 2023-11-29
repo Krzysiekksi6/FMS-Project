@@ -5,6 +5,8 @@ import config from "../config";
 import { UserDetails } from "../entity/user/UserDetails";
 import { Product } from "../entity/product/Product";
 import { ProductCategory } from "../entity/product/ProductCategory";
+import { Inventory } from "../entity/inventory/Inventory";
+import { InventoryItem } from "../entity/inventory/InventoryItem";
 export const connectDatabase = new DataSource({
   type: "postgres",
   host: "localhost",
@@ -14,7 +16,14 @@ export const connectDatabase = new DataSource({
   database: "postgres",
   synchronize: true,
   logging: false,
-  entities: [User, UserDetails, Product, ProductCategory],
+  entities: [
+    User,
+    UserDetails,
+    Product,
+    ProductCategory,
+    Inventory,
+    InventoryItem,
+  ],
   migrations: [],
   subscribers: [],
 });
