@@ -6,9 +6,11 @@ import users from "./api/users";
 import logout from "./logout";
 import products from "./api/products";
 import productsCategory from "./api/productsCategory";
+import inventoryItem from "./api/inventoryItem";
 export const Routes = [
   ...register,
   ...inventory,
+  ...inventoryItem,
   ...auth,
   ...refresh,
   ...logout,

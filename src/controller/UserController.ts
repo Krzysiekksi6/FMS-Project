@@ -7,7 +7,14 @@ export class UserController {
   private userRepository = connectDatabase.getRepository(User);
 
   async all(request: Request, response: Response, next: NextFunction) {
-    const users = await this.userRepository.find();
+    const users = await this.userRepository.find({
+      relations: {
+        inventory: {
+          items: true,
+        },
+        user_details: true,
+      },
+    });
     if (!users) {
       response.status(204);
       return { message: "No employees found!" };
@@ -20,6 +27,12 @@ export class UserController {
 
     const user = await this.userRepository.findOne({
       where: { id },
+      relations: {
+        inventory: {
+          items: true,
+        },
+        user_details: true,
+      },
     });
 
     if (!user) {

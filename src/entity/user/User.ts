@@ -47,7 +47,7 @@ export class User {
   })
   roles: UserRole[];
 
-  @OneToOne(() => Inventory)
+  @OneToOne(() => Inventory, { cascade: true, eager: true })
   @JoinColumn()
   inventory: Inventory;
 

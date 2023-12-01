@@ -3,6 +3,7 @@ import { RequestHandler } from "express";
 type Route = {
   method: string;
   route: string;
+  description?: string,
   controller: any;
   action: string;
   validation: RequestHandler[];

@@ -5,7 +5,7 @@ import { Inventory } from "../../entity/inventory/Inventory";
 export class InventoryController {
   private inventoryRepository = connectDatabase.getRepository(Inventory);
 
-  async all(req: Request, res: Response) {
+  async getAllItems(req: Request, res: Response) {
     const items = await this.inventoryRepository.find({
       relations: ["items"],
     });
@@ -13,7 +13,8 @@ export class InventoryController {
     if (!items) {
       return res.status(404).json({ message: `No inventory found` });
     }
-
     res.status(200).json(items);
   }
+
+
 }

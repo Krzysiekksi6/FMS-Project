@@ -8,7 +8,7 @@ const inventory: Route[] = [
     route: "/inventory",
     controller: InventoryController,
     validation: [],
-    action: "all",
+    action: "getAllItems",
     secure: false,
   },
 ];
