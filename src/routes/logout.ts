@@ -1,6 +1,7 @@
 import Route from "../types/Route";
 import { LogoutController } from "../controller/LogoutController";
 
+
 const logout: Route[] = [
   {
     method: "get",
