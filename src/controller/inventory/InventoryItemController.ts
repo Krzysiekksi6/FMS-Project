@@ -3,6 +3,7 @@ import { connectDatabase } from "../../config/connectDatabase";
 import { Inventory } from "../../entity/inventory/Inventory";
 import { InventoryItem } from "../../entity/inventory/InventoryItem";
 import { Product } from "../../entity/product/Product";
+import { addDays } from "date-fns";
 
 export class InventoryItemController {
   private inventoryRepository = connectDatabase.getRepository(Inventory);
@@ -34,12 +35,15 @@ export class InventoryItemController {
         .json({ message: `Product with _id: ${productId} not found!` });
     }
 
-    const currentDate = new Date();
-
+    const calculatePurchaseDate = purchaseDate ? purchaseDate : new Date();
+    const calculateExpiryDate = expiryDate? expiryDate : addDays(
+      calculatePurchaseDate,
+      product.shelfLifeDays
+    );
     const inventoryItem = new InventoryItem();
     inventoryItem.product = product;
-    inventoryItem.purchaseDate = currentDate;
-    inventoryItem.expiryDate = currentDate;
+    inventoryItem.purchaseDate = calculatePurchaseDate;
+    inventoryItem.expiryDate = calculateExpiryDate;
     inventoryItem.quantity = quantity;
     inventoryItem.usedQuantity = 0;
 
