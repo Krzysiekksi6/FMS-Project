@@ -7,6 +7,8 @@ import { Product } from "../entity/product/Product";
 import { ProductCategory } from "../entity/product/ProductCategory";
 import { Inventory } from "../entity/inventory/Inventory";
 import { InventoryItem } from "../entity/inventory/InventoryItem";
+import { Ingredient } from "../entity/ingredient/Ingredient";
+import { Dish } from "../entity/dish/Dish";
 export const connectDatabase = new DataSource({
   type: "postgres",
   host: "localhost",
@@ -23,6 +25,8 @@ export const connectDatabase = new DataSource({
     ProductCategory,
     Inventory,
     InventoryItem,
+    Ingredient, 
+    Dish
   ],
   migrations: [],
   subscribers: [],

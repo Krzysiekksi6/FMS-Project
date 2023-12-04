@@ -8,7 +8,7 @@ import {
 } from "typeorm";
 import { ProductCategory } from "./ProductCategory";
 import { InventoryItem } from "../inventory/InventoryItem";
-import { Ingredient } from "../ingredient/Ingredients";
+import { Ingredient } from "../ingredient/Ingredient";
 
 @Entity("product")
 export class Product {

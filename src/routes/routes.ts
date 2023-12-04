@@ -7,6 +7,7 @@ import logout from "./logout";
 import products from "./api/products";
 import productsCategory from "./api/productsCategory";
 import inventoryItem from "./api/inventoryItem";
+import dish from "./api/dish";
 export const Routes = [
   ...register,
   ...inventory,
@@ -17,4 +18,5 @@ export const Routes = [
   ...users,
   ...products,
   ...productsCategory,
+  ...dish,
 ];

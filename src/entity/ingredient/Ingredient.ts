@@ -8,6 +8,7 @@ export class Ingredient {
   id: number;
   @ManyToOne(() => Dish, (dish) => dish.ingredients)
   dish: Dish;
+
   @ManyToOne(() => Product, (product) => product.ingredients)
   product: Product;
 
