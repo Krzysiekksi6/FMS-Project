@@ -8,6 +8,7 @@ import {
 } from "typeorm";
 import { ProductCategory } from "./ProductCategory";
 import { InventoryItem } from "../inventory/InventoryItem";
+import { Ingredient } from "../ingredient/Ingredients";
 
 @Entity("product")
 export class Product {
@@ -33,10 +34,12 @@ export class Product {
   shelfLifeDays: number;
 
   @ManyToOne(() => ProductCategory, (category) => category.products)
-  
   @JoinColumn({ name: "product_category_id" })
   productCategoryId: number;
 
   @OneToMany(() => InventoryItem, (inventoryItem) => inventoryItem.product)
   inventoryItems: InventoryItem[];
+
+  @OneToMany(() => Ingredient, (ingredient) => ingredient.product)
+  ingredients: Ingredient[];
 }
