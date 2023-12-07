@@ -6,6 +6,7 @@ import {
   UpdateDateColumn,
   OneToOne,
   JoinColumn,
+  OneToMany,
 } from "typeorm";
 
 import { UserDetails } from "./UserDetails";

@@ -32,6 +32,7 @@ export class Dish {
   @OneToMany(() => Ingredient, (ingredient) => ingredient.dish)
   ingredients: Ingredient[];
 
+  // Getter dla obliczonych pól
   get getTotalCalories(): number {
     return (
       this.ingredients?.reduce(

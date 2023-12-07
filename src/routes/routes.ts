@@ -8,6 +8,8 @@ import products from "./api/products";
 import productsCategory from "./api/productsCategory";
 import inventoryItem from "./api/inventoryItem";
 import dish from "./api/dish";
+import diet from "./api/diet";
+import dietCategory from "./api/dietCategory";
 export const Routes = [
   ...register,
   ...inventory,
@@ -19,4 +21,6 @@ export const Routes = [
   ...products,
   ...productsCategory,
   ...dish,
+  ...diet,
+  ...dietCategory
 ];

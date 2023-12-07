@@ -43,15 +43,12 @@ export class DishController {
   async addDish(req: Request, res: Response) {
     const { name, description, ingredients } = req.body;
 
-    // Utwórz nowe danie
     const newDish = this.dishRepository.create({ name, description });
 
-    // Dodaj składniki do dania
     if (ingredients && ingredients.length > 0) {
       for (const ingredientData of ingredients) {
         const { productId, quantity } = ingredientData;
 
-        // Sprawdź, czy produkt istnieje w bazie danych
         const product = await this.productRepository.findOne({
           where: { id: productId },
         });
@@ -62,19 +59,16 @@ export class DishController {
             .json({ message: `Product with id ${productId} not found` });
         }
 
-        // Utwórz nowy składnik
         const newIngredient = this.ingredientRepository.create({
           dish: newDish,
           product,
           quantity,
         });
 
-
         newDish.ingredients = [...(newDish.ingredients || []), newIngredient];
       }
     }
 
-    // Zapisz danie razem ze składnikami do bazy danych
     const savedDish = await this.dishRepository.save(newDish);
 
     return res

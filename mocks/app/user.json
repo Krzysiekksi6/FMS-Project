@@ -1,0 +1,20 @@
+[
+  {
+    "firstname": "Krzysztof",
+    "lastname": "Ksiazek",
+    "username": "Krzysiekksi6",
+    "password": "haslo123"
+  },
+
+  {
+    "age": 25,
+    "weight": 90,
+    "height": 184,
+    "chestCircumference": 90,
+    "waistCircumference": 75,
+    "hipCircumference": 95,
+    "armCircumference": 30,
+    "thighCircumference": 50,
+    "calfCircumference": 35
+  }
+]
