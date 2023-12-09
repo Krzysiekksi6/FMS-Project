@@ -16,7 +16,7 @@ export class DietController {
   private dishRepository = connectDatabase.getRepository(Dish);
 
   async getAllDiets(req: Request, res: Response) {
-    const diets = await this.dietRepository.find({
+    const diets =  await this.dietRepository.find({
         relations: {
             dietCategory: true
         }

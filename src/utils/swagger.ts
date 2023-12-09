@@ -11,18 +11,18 @@ const options: swaggerJSDoc.Options = {
             version,
         },
         components: {
-            securitySchemes: {
-                bearerAuth: {
-                    type: "http",
-                    scheme: "bearer",
-                    bearerFormat: "JWT",
-                },
-            },
+            // securitySchemes: {
+            //     bearerAuth: {
+            //         type: "http",
+            //         scheme: "bearer",
+            //         bearerFormat: "JWT",
+            //     },
+            // },
         },
         security: [
-            {
-                bearerAuth: [],
-            },
+            // {
+            //     bearerAuth: [],
+            // },
         ],
     },
     apis: ["./src/routes/**/*.ts", "./src/schema/*.ts,", "./src/controller/*.ts"],

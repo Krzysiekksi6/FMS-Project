@@ -4,6 +4,30 @@ import { UserDetailsController } from "../../controller/UserDetailsController";
 import Route from "../../types/Route";
 import { UserRole } from "../../enums/UserRole";
 
+/**
+ * @swagger
+ * tags:
+ *   name: Kontroler użytkowników
+ *   description: Operacje związane z zarządzaniem danymi użytkowników
+ */
+
+/**
+ * @swagger
+ * /users:
+ *   get:
+ *     summary: Pobiera informacje o wszystkich użytkownikach
+ *     tags: [Kontroler użytkowników]
+ *     responses:
+ *       '200':
+ *         description: Udane pobranie informacji o użytkownikach
+ *         content:
+ *           application/json:
+ *             example:
+ *               users: [user1, user2, ...]
+ *       '401':
+ *         description: Nieautoryzowany dostęp
+ */
+
 const users: Route[] = [
   {
     method: "get",
