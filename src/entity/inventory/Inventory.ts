@@ -6,6 +6,6 @@ export class Inventory {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToMany(() => InventoryItem, (item) => item.inventory)
+  @OneToMany(() => InventoryItem, (item) => item.inventory, )
   items: InventoryItem[];
 }

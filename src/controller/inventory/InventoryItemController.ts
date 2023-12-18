@@ -7,17 +7,22 @@ import { addDays } from "date-fns";
 
 export class InventoryItemController {
   private inventoryRepository = connectDatabase.getRepository(Inventory);
+  private productRepository = connectDatabase.getRepository(Product);
   private inventoryItemRepository =
     connectDatabase.getRepository(InventoryItem);
-  private productRepository = connectDatabase.getRepository(Product);
 
   async addItem(req: Request, res: Response) {
-    console.log("POSTING");
     const { inventoryId, productId, purchaseDate, expiryDate, quantity } =
       req.body;
+    const { userId } = parseInt(req.params.id);
     const inventory = await this.inventoryRepository.findOne({
-      where: { id: inventoryId },
-      relations: ["items"],
+      where: { 
+        id: inventoryId,
+        userId: userId 
+      },
+      relations: {
+        items: true,
+      },
     });
     if (!inventory) {
       return res
@@ -48,98 +53,129 @@ export class InventoryItemController {
 
     inventory.items.push(inventoryItem);
 
-    await this.inventoryRepository.save(inventory);
+    const savedInventoryItem = await this.inventoryItemRepository.save(
+      inventoryItem
+    );
 
-    return res.status(201).json(inventoryItem);
+    const saved = await this.inventoryRepository.save(inventory);
+
+    return res.status(201).json({ saved, savedInventoryItem });
   }
+
   async getOneItem(req: Request, res: Response) {
-    const itemId = parseInt(req.params.id);
-
-    try {
-      const inventoryItem = await this.inventoryItemRepository.findOne({
-        where: {
-          id: itemId,
-        },
-        relations: {
-          product: true,
-        },
-      });
-
-      if (!inventoryItem) {
-        return res
-          .status(404)
-          .json({ message: `Inventory item with _id: ${itemId} not found!` });
-      }
-
-      return res.status(200).json(inventoryItem);
-    } catch (error) {
-      console.error("Error getting inventory item:", error);
-      return res.status(500).json({ message: "Internal server error" });
-    }
-  }
-  async editItem(req: Request, res: Response) {
-    const itemId = parseInt(req.params.id);
-    const { purchaseDate, expiryDate, quantity } = req.body;
-
-    try {
-      let inventoryItem = await this.inventoryItemRepository.findOne({
-        where: {
-          id: itemId,
-        },
-        relations: {
-          product: true,
-        },
-      });
-
-      if (!inventoryItem) {
-        return res
-          .status(404)
-          .json({ message: `Inventory item with _id: ${itemId} not found!` });
-      }
-
-      // Tutaj możesz dodać dodatkową logikę edycji, na przykład sprawdzając, czy przedmiot jest używany gdzie indziej
-
-      inventoryItem.purchaseDate = purchaseDate || inventoryItem.purchaseDate;
-      inventoryItem.expiryDate = expiryDate || inventoryItem.expiryDate;
-      inventoryItem.quantity = quantity || inventoryItem.quantity;
-
-      inventoryItem = await this.inventoryItemRepository.save(inventoryItem);
-
-      return res.status(200).json(inventoryItem);
-    } catch (error) {
-      console.error("Error editing inventory item:", error);
-      return res.status(500).json({ message: "Internal server error" });
-    }
-  }
-  async removeItem(req: Request, res: Response) {
-    const itemId = parseInt(req.params.id);
-
-    try {
-      const inventoryItem = await this.inventoryItemRepository.findOne({
-        where: {
-          id: itemId,
-        },
-        relations: {
-          product: true,
-        },
-      });
-
-      if (!inventoryItem) {
-        return res
-          .status(404)
-          .json({ message: `Inventory item with _id: ${itemId} not found!` });
-      }
-
-      // Tutaj możesz dodać dodatkową logikę, na przykład sprawdzając, czy przedmiot jest używany gdzie indziej przed usunięciem
-
-      await this.inventoryItemRepository.remove(inventoryItem);
-
+    const { inventoryId, productId } = req.body;
+    const inventory = await this.inventoryRepository.findOne({
+      where: { id: inventoryId },
+      relations: {
+        items: true,
+      },
+    });
+    if (!inventory) {
       return res
-        .status(200)
-        .json({ message: "Inventory item removed successfully!" });
-    } catch (error) {
-      console.error("Error removing inventory item:", error);
-      return res.status(500).json({ message: "Internal server error" });
+        .status(404)
+        .json({ message: `Inventory with _id: ${inventoryId} not found!` });
     }
+
+    const foundItem = inventory.items.find((item) => item.id == productId);
+    console.log("Founded ", foundItem);
+    if (!foundItem) {
+      return res
+        .status(404)
+        .json({ message: `Inventory item with id: ${productId} not found!` });
+    }
+
+    return res.status(200).json(foundItem);
+  }
+
+  async editItem(req: Request, res: Response) {
+    const { inventoryId, productId, newValues } = req.body;
+    const inventory = await this.inventoryRepository.findOne({
+      where: { id: inventoryId },
+      relations: {
+        items: true,
+      },
+    });
+    if (!inventory) {
+      return res
+        .status(404)
+        .json({ message: `Inventory with _id: ${inventoryId} not found!` });
+    }
+
+    const foundItem = inventory.items.find((item) => item.id == productId);
+    console.log("Founded ", foundItem);
+    if (!foundItem) {
+      return res
+        .status(404)
+        .json({ message: `Inventory item with id: ${productId} not found!` });
+    }
+    if (newValues.purchaseDate) {
+      foundItem.purchaseDate = newValues.purchaseDate;
+    }
+
+    if (newValues.expiryDate) {
+      foundItem.expiryDate = newValues.expiryDate;
+    }
+
+    if (newValues.quantity) {
+      foundItem.quantity = newValues.quantity;
+    }
+    const updatedItem = await this.inventoryItemRepository.save(foundItem);
+
+    return res.status(200).json({ updatedItem });
+  }
+
+  async deleteItem(req: Request, res: Response) {
+    const { inventoryId, productId } = req.body;
+
+    const inventory = await this.inventoryRepository.findOne({
+      where: { id: inventoryId },
+      relations: {
+        items: true,
+      },
+    });
+
+    if (!inventory) {
+      return res
+        .status(404)
+        .json({ message: `Inventory with _id: ${inventoryId} not found!` });
+    }
+
+    const foundItem = inventory.items.find((item) => item.id == productId);
+
+    if (!foundItem) {
+      return res
+        .status(404)
+        .json({ message: `Inventory item with id: ${productId} not found!` });
+    }
+
+    try {
+      await this.inventoryItemRepository.remove(foundItem);
+    } catch (error) {
+      console.error("Error deleting inventory item:", error);
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
+
+    return res
+      .status(200)
+      .json({ message: "Inventory item deleted successfully" });
+  }
+  async getCurrentInventoryState(req: Request, res: Response) {
+    const { inventoryId } = req.params;
+
+    const inventory = await this.inventoryRepository
+      .createQueryBuilder("inventory")
+      .leftJoinAndSelect("inventory.items", "inventory_item")
+      .leftJoinAndSelect("inventory_item.product", "product")
+      .leftJoinAndSelect("product.productCategory", "product_category") // Dodane left join z tabelą ProductCategory
+      .where("inventory.id = :id", { id: inventoryId })
+      .getOne();
+
+    if (!inventory) {
+      return res
+        .status(404)
+        .json({ message: `Inventory with id: ${inventoryId} not found!` });
+    }
+
+    return res.status(200).json({ inventory });
   }
 }

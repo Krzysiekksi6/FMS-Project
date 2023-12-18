@@ -13,14 +13,11 @@ export class RegisterController {
 
     this.validUserData(res, firstname, lastname, username, password);
     this.checkDuplicateUser(res, username);
-    const newInventory = Object.assign(new Inventory(), {
+    const userInventory = Object.assign(new Inventory(), {
       items: []
     });
 
-    const savedInventory = await this.inventoryRepository.save(newInventory);
-    console.log("new", savedInventory)
-    console.log("saved", savedInventory)
-
+    const savedInventory = await this.inventoryRepository.save(userInventory);
     const hashedpwd = await bcrypt.hash(password, 10);
     const user = Object.assign(new User(), {
       firstname,

@@ -7,7 +7,9 @@ export class InventoryController {
 
   async getAllItems(req: Request, res: Response) {
     const items = await this.inventoryRepository.find({
-      relations: ["items"],
+      relations: {
+        items: true,
+      },
     });
 
     if (!items) {
@@ -15,6 +17,5 @@ export class InventoryController {
     }
     res.status(200).json(items);
   }
-
-
+  
 }

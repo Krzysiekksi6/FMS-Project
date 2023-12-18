@@ -45,7 +45,7 @@ const users: Route[] = [
     action: "one",
     validation: [param("id").isInt()],
     secure: true,
-    roles: [UserRole.ADMIN, UserRole.MODERATOR],
+    roles: [UserRole.ADMIN, UserRole.MODERATOR, UserRole.USER],
     /**
      * @swagger
      * /users/{id}:

@@ -35,9 +35,10 @@ export class Product {
 
   @ManyToOne(() => ProductCategory, (category) => category.products)
   @JoinColumn({ name: "product_category_id" })
-  productCategoryId: number;
+  productCategory: ProductCategory;
 
   @OneToMany(() => InventoryItem, (inventoryItem) => inventoryItem.product)
+  @JoinColumn({ name: "product_id" })
   inventoryItems: InventoryItem[];
 
   @OneToMany(() => Ingredient, (ingredient) => ingredient.product)

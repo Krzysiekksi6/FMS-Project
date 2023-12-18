@@ -7,7 +7,13 @@ const inventoryItem: Route[] = [
     method: "post",
     route: "/addItem",
     controller: InventoryItemController,
-    validation: [],
+    validation: [
+      body("inventoryId").isInt(),
+      body("productId").isInt(),
+      body("purchaseDate").optional().isNumeric(),
+      body("expiryDate").optional().isNumeric(),
+      body("quantity").isInt(),
+    ],
     action: "addItem",
     secure: false,
   },
@@ -17,6 +23,15 @@ const inventoryItem: Route[] = [
     controller: InventoryItemController,
     validation: [param("id").isInt()],
     action: "getOneItem",
+    secure: false,
+  },
+
+  {
+    method: "get",
+    route: "/getCurrentInventory/:inventoryId",
+    controller: InventoryItemController,
+    action: "getCurrentInventoryState",
+    validation: [],
     secure: false,
   },
   {

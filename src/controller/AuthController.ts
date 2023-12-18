@@ -59,6 +59,7 @@ export class AuthController {
           firstname: user.firstname,
           id: user.id,
           userDetails: user.user_details,
+          inventoryId: user.inventory.id
         });
     } else {
       return res.status(401).json({ message: "Unauthorized" });
