@@ -6,15 +6,12 @@ import {
   UpdateDateColumn,
   OneToOne,
   JoinColumn,
+  OneToMany,
 } from "typeorm";
 
 import { UserDetails } from "./UserDetails";
-
-export enum UserRole {
-  USER = "User",
-  MODERATOR = "Moderator",
-  ADMIN = "Admin",
-}
+import { UserRole } from "../../enums/UserRole";
+import { Inventory } from "../inventory/Inventory";
 
 @Entity("user")
 export class User {
@@ -34,7 +31,7 @@ export class User {
   @Column()
   password: string;
 
-  @Column()
+  @Column({ nullable: true })
   refreshToken: string;
 
   @CreateDateColumn()
@@ -46,9 +43,14 @@ export class User {
   @Column({
     type: "enum",
     enum: UserRole,
-    default: UserRole.USER,
+    array: true,
+    default: [UserRole.USER],
   })
-  role: UserRole;
+  roles: UserRole[];
+
+  @OneToOne(() => Inventory, { cascade: true, eager: true })
+  @JoinColumn()
+  inventory: Inventory;
 
   @OneToOne(() => UserDetails, { cascade: true, eager: true })
   @JoinColumn()

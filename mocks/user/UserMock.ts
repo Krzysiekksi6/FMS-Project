@@ -12,7 +12,7 @@ export const createMockUser = (): User => {
     refreshToken: "refreshToken123",
     createdAt: new Date(), 
     updatedAt: new Date(), 
-    role: UserRole.USER,
+    roles: [UserRole.USER],
     user_details: userDetails,
   };
 };
