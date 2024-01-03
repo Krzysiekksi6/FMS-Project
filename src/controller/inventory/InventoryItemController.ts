@@ -12,13 +12,11 @@ export class InventoryItemController {
     connectDatabase.getRepository(InventoryItem);
 
   async addItem(req: Request, res: Response) {
-    const { inventoryId, productId, purchaseDate, expiryDate, quantity } =
+    const { inventoryId, productId, purchaseDate, expiryDate, quantity, unit } =
       req.body;
-    const { userId } = parseInt(req.params.id);
     const inventory = await this.inventoryRepository.findOne({
-      where: { 
+      where: {
         id: inventoryId,
-        userId: userId 
       },
       relations: {
         items: true,
@@ -50,6 +48,7 @@ export class InventoryItemController {
     inventoryItem.expiryDate = calculateExpiryDate;
     inventoryItem.quantity = quantity;
     inventoryItem.usedQuantity = 0;
+    inventoryItem.unit = unit;
 
     inventory.items.push(inventoryItem);
 

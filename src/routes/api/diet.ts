@@ -25,13 +25,7 @@ const diet: Route[] = [
     controller: DietController,
     action: "addDayToWeek",
     validation: [
-      body("weeklyDietId").isInt(),
-      body("dayOfWeek").isString(),
-      body("date").isDate(),
-      body("totalCalories").isFloat(),
-      body("totalProtein").isFloat(),
-      body("totalCarbs").isFloat(),
-      body("totalFat").isFloat(),
+  
     ],
     secure: false,
   },

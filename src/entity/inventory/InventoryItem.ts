@@ -7,6 +7,7 @@ import {
 } from "typeorm";
 import { Inventory } from "./Inventory";
 import { Product } from "../product/Product";
+import { Units } from "../../enums/Units";
 
 @Entity("inventory_item")
 export class InventoryItem {
@@ -32,6 +33,14 @@ export class InventoryItem {
 
   @Column({ default: 0 })
   usedQuantity: number;
+
+  @Column({
+    type: "enum",
+    enum: Units,
+    array: false,
+    default: Units.PIECE,
+  })
+  unit: Units;
 
   @Column({ nullable: true })
   lastUsedDate: Date;

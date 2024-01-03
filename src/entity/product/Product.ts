@@ -33,6 +33,7 @@ export class Product {
   @Column()
   shelfLifeDays: number;
 
+
   @ManyToOne(() => ProductCategory, (category) => category.products)
   @JoinColumn({ name: "product_category_id" })
   productCategory: ProductCategory;

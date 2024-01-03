@@ -10,8 +10,8 @@ const inventoryItem: Route[] = [
     validation: [
       body("inventoryId").isInt(),
       body("productId").isInt(),
-      body("purchaseDate").optional().isNumeric(),
-      body("expiryDate").optional().isNumeric(),
+      body("purchaseDate").optional(),
+      body("expiryDate").optional(),
       body("quantity").isInt(),
     ],
     action: "addItem",
