@@ -1,5 +1,8 @@
+# Akademia Tarnowska
+
 # Nazwa kursu
 Testowanie i jakość oprogramowania
+
 # Autor
 Krzysztof Książek
 # Temat projektu
@@ -7,6 +10,9 @@ Krzysztof Książek
 System zarządzania zasobami żywnościowymi oraz dietą
 
 # Opis projektu
+
+![Main page](./docs/preview/Screenshot_2.png)
+Landing Page
 
 W ramach realizacji projektu zostanie zaprojektowana oraz
 zaimplementowana aplikacja, która będzie miała na celu zarządzaniem
@@ -17,6 +23,9 @@ wzrost, waga
 - Generowanie listy zakupów
 - Podgląd przepisów kulinarnych
 
+![Dashboard](./docs/preview/Screenshot_10.png)
+Panel główny aplikacji
+
 
 
 # Uruchomienie projektu
@@ -26,11 +35,18 @@ wzrost, waga
 3. Uruchom komendę `docker compose up -d` aby uruchomić instancję bazy danych w tle
 4. Uruchom komendę `npm run start` lub `npm run dev`
 5. Uruchom komendę `docker compose down` aby zatrzymać działanie instancji bazy danych
+6. Sklonuj repozytorium interfejsu użytkownika https://github.com/Krzysiekksi6/FMS-Frontend
+7. Uruchom komendę `npm i` w terminalu projektu interfejsu użytkownika
+8. Uruchom komendę `npm run start` lub `npm run dev`
+9. Aplikacja Frontend będzie dostępna na porcie `http://localhost:5173`
 
 # Uruchomienie testów jednostkowych i integracyjnych
 
 1. Uruchom komendę `npm run test` aby uruchomić wszystkie testy
 2. Uruchom komendę `npx jest register.test.ts` aby uruchomić pojedyncze testy
+
+![Dashboard](./docs/tests/Jednostkowe_register.png)
+Panel główny aplikacji
 
 # Dodatkowe informacje dla prowadzącego
 
@@ -120,7 +136,10 @@ Aktualizuje  szczegóły użytkownika o określonym identyfikatorze.
 
 - 404 Not Found: Brak użytkownika o podanym identyfikatorze. Odpowiedź zawiera komunikat, np. "User not found".
 
+### Szczegółowa dokumentacja API znajduje się na porcie `localhost:3000/docs`, wygenerowana za pomocą narzędzia Swagger Docs
 
+![Dashboard](./docs/preview/Screenshot_4.png)
+Swagger Docs
 
 # Scenariusze testowe dla testera manualnego
 
@@ -158,24 +177,19 @@ Aktualizuje  szczegóły użytkownika o określonym identyfikatorze.
 | TC_REG_USER_DETAILS_002 | Rejestracja użytkownika i dodanie szczegółów                      | 1. Utwórz i zarejestruj nowego użytkownika. <br>2. Wykonaj żądanie PUT na /users/{user.id}/details z danymi szczegółów użytkownika.         | Odpowiedź z kodem 201 i obliczonym BMI w szczegółach użytkownika.        |
 | TC_REG_USER_DETAILS_003 | Odmowa dodania nieprawidłowych szczegółów użytkownika              | 1. Utwórz i zarejestruj nowego użytkownika z nieprawidłowymi danymi szczegółów. <br>2. Wykonaj żądanie PUT na /users/{user.id}/details z danymi szczegółów użytkownika. | Odpowiedź z kodem 400 i komunikatem "Invalid data".                    |
 
-                                               
-                                               
-
-
-
-
-
+                                                                                  
 # Technologie użyte w projekcie
-1. Nodejs + Express
+1. Nodejs + Express + TypeScript
 2. PostgresSQL
 3. TypeORM
-4. React.js
-5. Markdown
-6. Docker
-7. Jest
-8. Supertest
-9. ExpressValidator
-10. Postman
+4. React.js + TypeScript
+5. React Redux
+6. Markdown
+7. Docker
+8. Jest
+9. Supertest
+10. ExpressValidator
+11. Postman
 
 
 

@@ -33,5 +33,19 @@ describe("UsedDetailsController BMI Calculator", () => {
       // Then
       expect(bmi).toBeGreaterThan(24.9);
     });
+
+    it("TC_BMI_006: Should handle zero height correctly", () => {
+      // Given
+      const weight = 60;
+      const height = 0;
+
+      // When
+      const bmi = userDetailsController.calculateBMI;
+
+      // Then
+      expect(() => bmi(weight, height)).toThrowError(
+        "Invalid input. Weight must be a positive number, and height must be a positive non-zero number."
+      );
+    });
   });
 });
