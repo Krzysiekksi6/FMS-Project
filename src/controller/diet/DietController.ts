@@ -7,6 +7,8 @@ import { WeeklyDiet } from "../../entity/diet/WeeklyDiet";
 import { DailyDiet } from "../../entity/diet/DailyDiet";
 import { DailyMeal } from "../../entity/diet/DailyMeal";
 import { Dish } from "../../entity/dish/Dish";
+import { addDays, format } from "date-fns";
+import plLocale from "date-fns/locale/pl";
 
 export class DietController {
   private dietRepository = connectDatabase.getRepository(Diet);
@@ -16,17 +18,37 @@ export class DietController {
   private dishRepository = connectDatabase.getRepository(Dish);
 
   async getAllDiets(req: Request, res: Response) {
-    const diets =  await this.dietRepository.find({
-        relations: {
-            dietCategory: true
-        }
+    const diets = await this.dietRepository.find({
+      relations: {
+        dietCategory: true,
+      },
     });
     if (!diets) {
       return res.status(404).json({ message: "Diets not found" });
     }
-    console.log(diets)
+    console.log(diets);
 
     return res.status(200).json(diets);
+  }
+
+  // createQueryBuilder("user").where("user.id IN (:...ids)", { ids: [1, 2, 3, 4] })
+
+  async getWeeklyDietsByIds(req: Request, res: Response) {
+    const { weeklyDietIds } = req.body;
+    const weeklyDiets = await this.weeklyDietRepository.find({
+      relations: {
+        dailyDiets: true,
+      },
+      where: {
+        id: In(weeklyDietIds),
+      },
+    });
+
+    if (!weeklyDiets) {
+      return res.status(404).json({ message: "Weekly Diets not found" });
+    }
+
+    return res.status(200).json(weeklyDiets);
   }
 
   async createDiet(req: Request, res: Response) {
@@ -60,38 +82,72 @@ export class DietController {
 
   async addDayToWeek(req: Request, res: Response) {
     const {
-      weeklyDietId,
-      dayOfWeek,
-      date,
+      weeklyDietIds,
+      startDate,
       totalCalories,
       totalProtein,
       totalCarbs,
       totalFat,
     } = req.body;
 
-    const weeklyDiet = await this.weeklyDietRepository.findOne({
-      where: {
-        id: weeklyDietId,
-      },
-    });
-    if (!weeklyDiet) {
-      return res.status(404).json({ error: "WeeklyDiet not found" });
+    const polishDaysOfWeek = [
+      "Poniedziałek",
+      "Wtorek",
+      "Środa",
+      "Czwartek",
+      "Piątek",
+      "Sobota",
+      "Niedziela",
+    ];
+
+    const newDays = [];
+    let currentDate = new Date(startDate);
+
+    // Znajdź pierwszy dzień tygodnia
+    const startDayOfWeek = new Date(currentDate);
+    startDayOfWeek.setDate(startDayOfWeek.getDate() - startDayOfWeek.getDay());
+
+    for (let i = 0; i < weeklyDietIds.length; i++) {
+      const weeklyDietId = weeklyDietIds[i];
+      const weeklyDiet = await this.weeklyDietRepository.findOne({
+        where: {
+          id: weeklyDietId,
+        },
+      });
+
+      if (!weeklyDiet) {
+        return res.status(404).json({ error: "WeeklyDiet not found" });
+      }
+
+      currentDate = new Date(startDayOfWeek); // Resetuj aktualną datę na początek tygodnia
+
+      // Tworzymy dni dla każdego dnia tygodnia
+      for (let dayOfWeek = 1; dayOfWeek <= 7; dayOfWeek++) {
+        const dayName = polishDaysOfWeek[dayOfWeek - 1];
+
+        const newDay = this.dailyDietRepository.create({
+          weeklyDiet,
+          dayOfWeek: dayName,
+          date: currentDate,
+          totalCalories,
+          totalProtein,
+          totalCarbs,
+          totalFat,
+        });
+
+        newDays.push(newDay);
+        currentDate.setDate(currentDate.getDate() + 1); // Przejdź do kolejnego dnia
+      }
+
+      startDayOfWeek.setDate(startDayOfWeek.getDate() + 7); // Przejdź do początku kolejnego tygodnia
     }
 
-    const newDay = this.dailyDietRepository.create({
-      weeklyDiet,
-      dayOfWeek,
-      date,
-      totalCalories,
-      totalProtein,
-      totalCarbs,
-      totalFat,
-    });
-    await this.dailyDietRepository.save(newDay);
+    await this.dailyDietRepository.save(newDays);
 
-    res
-      .status(201)
-      .json({ message: "Day added to the week successfully", newDay });
+    res.status(201).json({
+      message: "Days added to the weeks successfully",
+      newDays,
+    });
   }
 
   async addMealToDay(req: Request, res: Response) {

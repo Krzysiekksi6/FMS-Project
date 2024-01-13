@@ -13,6 +13,14 @@ const diet: Route[] = [
   },
   {
     method: "post",
+    route: "/weeklyDiets",
+    controller: DietController,
+    action: "getWeeklyDietsByIds",
+    validation: [],
+    secure: false,
+  },
+  {
+    method: "post",
     route: "/diet",
     controller: DietController,
     action: "createDiet",
@@ -24,15 +32,7 @@ const diet: Route[] = [
     route: "/add-day-to-week",
     controller: DietController,
     action: "addDayToWeek",
-    validation: [
-      body("weeklyDietId").isInt(),
-      body("dayOfWeek").isString(),
-      body("date").isDate(),
-      body("totalCalories").isFloat(),
-      body("totalProtein").isFloat(),
-      body("totalCarbs").isFloat(),
-      body("totalFat").isFloat(),
-    ],
+    validation: [],
     secure: false,
   },
   {
@@ -42,7 +42,7 @@ const diet: Route[] = [
     action: "addMealToDay",
     validation: [
       body("dailyDietId").isInt(),
-     
+
       body("dishIds").isArray().notEmpty(),
     ],
     secure: false,
@@ -149,4 +149,3 @@ export default diet;
  *       '500':
  *         description: Błąd serwera
  */
-

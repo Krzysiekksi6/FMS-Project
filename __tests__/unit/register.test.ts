@@ -110,6 +110,8 @@ it("TC_REG_006: Should return an http error 400 bad request when password is not
   expect(response.status).toBe(400);
 });
 
+
+
 it("TC_AUTH_001: Should successfully log in a user", async () => {
   // Given
   const mockUser = createMockUser();
