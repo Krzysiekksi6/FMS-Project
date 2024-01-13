@@ -31,6 +31,26 @@ export class DietController {
     return res.status(200).json(diets);
   }
 
+  // createQueryBuilder("user").where("user.id IN (:...ids)", { ids: [1, 2, 3, 4] })
+
+  async getWeeklyDietsByIds(req: Request, res: Response) {
+    const { weeklyDietIds } = req.body;
+    const weeklyDiets = await this.weeklyDietRepository.find({
+      relations: {
+        dailyDiets: true,
+      },
+      where: {
+        id: In(weeklyDietIds),
+      },
+    });
+
+    if (!weeklyDiets) {
+      return res.status(404).json({ message: "Weekly Diets not found" });
+    }
+
+    return res.status(200).json(weeklyDiets);
+  }
+
   async createDiet(req: Request, res: Response) {
     const { name, description, durationWeeks, caloriesPerDay, dietCategoryId } =
       req.body;
@@ -83,6 +103,10 @@ export class DietController {
     const newDays = [];
     let currentDate = new Date(startDate);
 
+    // Znajdź pierwszy dzień tygodnia
+    const startDayOfWeek = new Date(currentDate);
+    startDayOfWeek.setDate(startDayOfWeek.getDate() - startDayOfWeek.getDay());
+
     for (let i = 0; i < weeklyDietIds.length; i++) {
       const weeklyDietId = weeklyDietIds[i];
       const weeklyDiet = await this.weeklyDietRepository.findOne({
@@ -95,13 +119,15 @@ export class DietController {
         return res.status(404).json({ error: "WeeklyDiet not found" });
       }
 
+      currentDate = new Date(startDayOfWeek); // Resetuj aktualną datę na początek tygodnia
+
       // Tworzymy dni dla każdego dnia tygodnia
       for (let dayOfWeek = 1; dayOfWeek <= 7; dayOfWeek++) {
         const dayName = polishDaysOfWeek[dayOfWeek - 1];
 
         const newDay = this.dailyDietRepository.create({
           weeklyDiet,
-          dayOfWeek: dayName, // Ustawiamy nazwę dnia tygodnia
+          dayOfWeek: dayName,
           date: currentDate,
           totalCalories,
           totalProtein,
@@ -110,8 +136,10 @@ export class DietController {
         });
 
         newDays.push(newDay);
-        currentDate = addDays(currentDate, 1); // Aktualizujemy datę dla kolejnego dnia
+        currentDate.setDate(currentDate.getDate() + 1); // Przejdź do kolejnego dnia
       }
+
+      startDayOfWeek.setDate(startDayOfWeek.getDate() + 7); // Przejdź do początku kolejnego tygodnia
     }
 
     await this.dailyDietRepository.save(newDays);

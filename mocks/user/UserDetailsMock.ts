@@ -13,6 +13,8 @@ export const createMockUserDetails = (): UserDetails => {
     thighCircumference: 50,
     calfCircumference: 35,
     bmi: 0,
+    bmr: 0,
+    currentDiet: null,
   };
 };
 
@@ -29,5 +31,7 @@ export const createMockUserInvalidDetails = () => {
     thighCircumference: 50,
     calfCircumference: 35,
     bmi: 0,
+    bmr: 0,
+    currentDiet: null,
   };
 };
