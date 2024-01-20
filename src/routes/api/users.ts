@@ -139,6 +139,40 @@ const users: Route[] = [
      */
   },
   {
+    method: "put",
+    route: "/users/:id/updateDietId",
+    controller: UserDetailsController,
+    action: "updateDietId",
+    validation: [param("id").isInt()],
+    /**
+     * @swagger
+     * /users/{id}/details:
+     *   put:
+     *     summary: Dodaje szczegóły użytkownika na podstawie identyfikatora
+     *     tags: [Kontroler użytkowników]
+     *     parameters:
+     *       - name: id
+     *         in: path
+     *         required: true
+     *         description: Identyfikator użytkownika
+     *         schema:
+     *           type: integer
+     *     responses:
+     *       '200':
+     *         description: Udane dodanie szczegółów użytkownika
+     *         content:
+     *           application/json:
+     *             example:
+     *               message: Szczegóły użytkownika dodane pomyślnie
+     *       '401':
+     *         description: Nieautoryzowany dostęp
+     *       '403':
+     *         description: Brak wymaganych uprawnień do wykonania tej operacji
+     *       '404':
+     *         description: Użytkownik o podanym identyfikatorze nie istnieje
+     */
+  },
+  {
     method: "delete",
     route: "/users/:id/details",
     controller: UserDetailsController,

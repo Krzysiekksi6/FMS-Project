@@ -13,6 +13,11 @@ export class AuthController {
 
     const user = await this.userRepository.findOne({
       where: { username },
+      relations: {
+        user_details: {
+          currentDiet: true,
+        },
+      },
     });
 
     if (!user) {
@@ -50,17 +55,15 @@ export class AuthController {
         sameSite: "none",
         // secure: true,
       });
-      res
-        .status(200)
-        .json({
-          message: `User: ${user.username} is logged in`,
-          accessToken,
-          roles,
-          firstname: user.firstname,
-          id: user.id,
-          userDetails: user.user_details,
-          inventoryId: user.inventory.id
-        });
+      res.status(200).json({
+        message: `User: ${user.username} is logged in`,
+        accessToken,
+        roles,
+        firstname: user.firstname,
+        id: user.id,
+        userDetails: user.user_details,
+        inventoryId: user.inventory.id,
+      });
     } else {
       return res.status(401).json({ message: "Unauthorized" });
     }

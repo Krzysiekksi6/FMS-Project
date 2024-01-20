@@ -2,9 +2,11 @@ import { Request, Response } from "express";
 import { connectDatabase } from "../config/connectDatabase";
 import { UserDetails } from "../entity/user/UserDetails";
 import { User } from "../entity/user/User";
+import { Diet } from "../entity/diet/Diet";
 export class UserDetailsController {
   private userDetailsRepository = connectDatabase.getRepository(UserDetails);
   private userRepository = connectDatabase.getRepository(User);
+  private dietRepository = connectDatabase.getRepository(Diet);
 
   async removeUserDetails(request: Request, response: Response) {
     try {
@@ -19,6 +21,25 @@ export class UserDetailsController {
       });
     } catch (error) {
       return response.status(500).json({ error: error.message });
+    }
+  }
+
+  async updateDietId(request: Request, response: Response) {
+    try {
+      const userId = parseInt(request.params.id);
+      const user = await this.findUserById(userId);
+      const { dietId } = request.body;
+
+      if (!user) {
+        return response.status(404).json({ message: "User not found" });
+      }
+
+      const diet = await this.dietRepository.findOne({ where: { id: dietId } });
+      user.user_details.currentDiet = diet;
+      await this.saveUser(user);
+    } catch (error) {
+      console.error("Błąd podczas aktualizacji ID diety w UserDetails", error);
+      throw error;
     }
   }
 
@@ -64,7 +85,17 @@ export class UserDetailsController {
   }
 
   private async findUserById(userId: number): Promise<User | undefined> {
-    return await this.userRepository.findOne({ where: { id: userId } });
+    return await this.userRepository.findOne({
+      where: { id: userId },
+      relations: {
+        inventory: {
+          items: true,
+        },
+        user_details: {
+          currentDiet: true,
+        },
+      },
+    });
   }
 
   private isValidUserDetailsData(userDetailsData: any): boolean {

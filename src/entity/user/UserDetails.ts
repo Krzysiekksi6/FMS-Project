@@ -1,4 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  OneToOne,
+  JoinColumn,
+} from "typeorm";
 import { Diet } from "../diet/Diet";
 @Entity("user_details")
 export class UserDetails {
@@ -39,7 +45,7 @@ export class UserDetails {
   @Column({ type: "float4", nullable: true })
   bmr: number;
 
-  @OneToOne(() => Diet)
+  @OneToOne(() => Diet, { nullable: true })
   @JoinColumn({ name: "current_diet_id" })
   currentDiet: Diet;
 }

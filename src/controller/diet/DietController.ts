@@ -21,6 +21,7 @@ export class DietController {
     const diets = await this.dietRepository.find({
       relations: {
         dietCategory: true,
+        weeklyDiets: true,
       },
     });
     if (!diets) {
@@ -29,6 +30,103 @@ export class DietController {
     console.log(diets);
 
     return res.status(200).json(diets);
+  }
+
+  async getDietById(req: Request, res: Response) {
+    const dietId = parseInt(req.params.id);
+
+    const diet = await this.dietRepository.findOne({
+      where: {
+        id: dietId,
+      },
+      relations: {
+        weeklyDiets: {
+          dailyDiets: {
+            dailyMeals: {
+              dishes: {
+                ingredients: {
+                  product: {
+                    productCategory: true
+                  }
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!diet) {
+      return res.status(404).json({ message: "Diet not found" });
+    }
+    console.log(diet);
+
+    return res.status(200).json(diet);
+  }
+
+  async generateShoppingList(req: Request, res: Response) {
+    const dietId = parseInt(req.params.id);
+
+    const dietData = await this.dietRepository.findOne({
+      where: {
+        id: dietId,
+      },
+      relations: {
+        weeklyDiets: {
+          dailyDiets: {
+            dailyMeals: {
+              dishes: {
+                ingredients: {
+                  product: {
+                    productCategory: true
+                  }
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!dietData) {
+      return res.status(404).json({ message: "Diet not found" });
+    }
+
+    // Używamy mapy do grupowania składników po nazwie produktu
+    const shoppingListMap = new Map<
+      string,
+      { productName: string; quantity: number }
+    >();
+
+    for (const weeklyDiet of dietData.weeklyDiets) {
+      for (const dailyDiet of weeklyDiet.dailyDiets) {
+        for (const meal of dailyDiet.dailyMeals) {
+          for (const dish of meal.dishes) {
+            for (const ingredient of dish.ingredients) {
+              const productName = ingredient.product.name;
+
+              // Jeśli produkt już istnieje w mapie, zsumuj ilość
+              if (shoppingListMap.has(productName)) {
+                shoppingListMap.get(productName)!.quantity +=
+                  ingredient.quantity;
+              } else {
+                // Jeśli nie istnieje, dodaj nowy wpis
+                shoppingListMap.set(productName, {
+                  productName,
+                  quantity: ingredient.quantity,
+                });
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // Konwertuj mapę na tablicę
+    const shoppingList = Array.from(shoppingListMap.values());
+
+    console.log(shoppingList);
+    return res.status(200).json(shoppingList);
   }
 
   // createQueryBuilder("user").where("user.id IN (:...ids)", { ids: [1, 2, 3, 4] })
@@ -188,7 +286,7 @@ export class DietController {
     });
     const savedMeal = await this.dailyMealRepository.save(newMeal);
 
-    res
+    return res
       .status(201)
       .json({ message: "Meal added to the day successfully", savedMeal });
   }

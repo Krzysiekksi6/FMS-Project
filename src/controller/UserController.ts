@@ -12,7 +12,9 @@ export class UserController {
         inventory: {
           items: true,
         },
-        user_details: true,
+        user_details: {
+          currentDiet: true,
+        },
       },
     });
     if (!users) {
@@ -31,7 +33,9 @@ export class UserController {
         inventory: {
           items: true,
         },
-        user_details: true,
+        user_details: {
+          currentDiet: true,
+        },
       },
     });
 

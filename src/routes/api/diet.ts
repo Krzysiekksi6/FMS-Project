@@ -47,7 +47,26 @@ const diet: Route[] = [
     ],
     secure: false,
   },
+  {
+    method: "get",
+    route: "/getDietById/:id",
+    controller: DietController,
+    action: "getDietById",
+    validation: [param("id").isInt()],
+    secure: false,
+  },
+  {
+    method: "get",
+    route: "/generateShoppingList/:id",
+    controller: DietController,
+    action: "generateShoppingList",
+    validation: [param("id").isInt()],
+    secure: false,
+  },
 ];
+
+
+// generateShopingList
 
 export default diet;
 

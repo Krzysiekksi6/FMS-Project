@@ -16,6 +16,13 @@ export class DishController {
         },
       },
     });
+    console.log(dishes);
+
+    const ingredients = await this.ingredientRepository.find({
+      relations: ["product", "dish"],
+    });
+
+    console.log(ingredients);
 
     if (!dishes) {
       return res.status(404).json({ message: "No dishes found!" });
@@ -38,42 +45,59 @@ export class DishController {
     if (!dish) {
       return res.status(404).json({ message: `Dish with _id:${id} not exist` });
     }
+
+    return res.status(200).json(dish);
+
   }
 
   async addDish(req: Request, res: Response) {
     const { name, description, ingredients } = req.body;
 
-    const newDish = this.dishRepository.create({ name, description });
+    try {
+      // Zapisz składniki do bazy danych
+      const savedIngredients = await Promise.all(
+        ingredients.map(async (ingredientData) => {
+          const { productId, quantity } = ingredientData;
 
-    if (ingredients && ingredients.length > 0) {
-      for (const ingredientData of ingredients) {
-        const { productId, quantity } = ingredientData;
+          // Znajdź produkt na podstawie productId
+          const product = await this.productRepository.findOne({
+            where: { id: productId },
+          });
 
-        const product = await this.productRepository.findOne({
-          where: { id: productId },
-        });
+          if (!product) {
+            return res
+              .status(404)
+              .json({ message: `Product with id ${productId} not found` });
+          }
 
-        if (!product) {
-          return res
-            .status(404)
-            .json({ message: `Product with id ${productId} not found` });
-        }
+          // Utwórz nową instancję składnika
+          const newIngredient = this.ingredientRepository.create({
+            product,
+            quantity,
+          });
 
-        const newIngredient = this.ingredientRepository.create({
-          dish: newDish,
-          product,
-          quantity,
-        });
+          // Zapisz nowy składnik do bazy danych
+          return this.ingredientRepository.save(newIngredient);
+        })
+      );
 
-        newDish.ingredients = [...(newDish.ingredients || []), newIngredient];
-      }
+      // Utwórz nową instancję dania
+      const newDish = this.dishRepository.create({
+        name,
+        description,
+        ingredients: savedIngredients,
+      });
+
+      // Zapisz nowe danie wraz ze składnikami
+      const savedDish = await this.dishRepository.save(newDish);
+
+      return res
+        .status(201)
+        .json({ message: "Dish added successfully", dish: savedDish });
+    } catch (error) {
+      console.error("Error in addDish:", error);
+      return res.status(500).json({ message: "Internal Server Error" });
     }
-
-    const savedDish = await this.dishRepository.save(newDish);
-
-    return res
-      .status(201)
-      .json({ message: "Dish added successfully", dish: savedDish });
   }
 
   async deleteDish(req: Request, res: Response) {

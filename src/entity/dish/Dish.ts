@@ -29,7 +29,7 @@ export class Dish {
   @Column({ type: "float", default: 0 })
   totalFat: number;
 
-  @OneToMany(() => Ingredient, (ingredient) => ingredient.dish)
+  @OneToMany(() => Ingredient, (ingredient) => ingredient.dish,  { cascade: true })
   ingredients: Ingredient[];
 
   // Getter dla obliczonych pól
