@@ -29,7 +29,7 @@ const diet: Route[] = [
   },
   {
     method: "post",
-    route: "/add-day-to-week",
+    route: "/addDayToWeek",
     controller: DietController,
     action: "addDayToWeek",
     validation: [],
@@ -37,7 +37,7 @@ const diet: Route[] = [
   },
   {
     method: "post",
-    route: "/add-meal-to-day",
+    route: "/addMealToDay",
     controller: DietController,
     action: "addMealToDay",
     validation: [
@@ -107,7 +107,7 @@ export default diet;
 
 /**
  * @swagger
- * /add-day-to-week:
+ * /addDayToWeek:
  *   post:
  *     summary: Dodawanie nowego dnia do tygodnia diety
  *     tags: [Kontroler planów żywieniowych]
@@ -143,7 +143,7 @@ export default diet;
 
 /**
  * @swagger
- * /add-meal-to-day:
+ * /addMealToDay:
  *   post:
  *     summary: Dodawanie posiłku do dnia diety
  *     tags: [Kontroler planów żywieniowych]

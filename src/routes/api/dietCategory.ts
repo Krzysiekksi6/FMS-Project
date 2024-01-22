@@ -5,7 +5,7 @@ import { DietCategoryController } from "../../controller/diet/DietCategoryContro
 const dietCategory: Route[] = [
   {
     method: "get",
-    route: "/diet-categories",
+    route: "/dietCategories",
     controller: DietCategoryController,
     action: "getAllDietCategories",
     validation: [],
@@ -13,7 +13,7 @@ const dietCategory: Route[] = [
   },
   {
     method: "get",
-    route: "/diet-categories/:id",
+    route: "/dietCategories/:id",
     controller: DietCategoryController,
     action: "getDietCategoryById",
     validation: [param("id").isInt()],
@@ -21,7 +21,7 @@ const dietCategory: Route[] = [
   },
   {
     method: "post",
-    route: "/diet-categories",
+    route: "/dietCategories",
     controller: DietCategoryController,
     action: "createDietCategory",
     validation: [
@@ -32,7 +32,7 @@ const dietCategory: Route[] = [
   },
   {
     method: "put",
-    route: "/diet-categories/:id",
+    route: "/dietCategories/:id",
     controller: DietCategoryController,
     action: "updateDietCategory",
     validation: [
@@ -44,7 +44,7 @@ const dietCategory: Route[] = [
   },
   {
     method: "delete",
-    route: "/diet-categories/:id",
+    route: "/dietCategories/:id",
     controller: DietCategoryController,
     action: "deleteDietCategory",
     validation: [param("id").isInt()],
@@ -63,7 +63,7 @@ export default dietCategory;
 
 /**
  * @swagger
- * /diet-categories:
+ * /dietCategories:
  *   get:
  *     summary: Pobieranie wszystkich dostępnych kategorii diet
  *     tags: [Kontroler kategorii planów żywieniowych]
@@ -76,7 +76,7 @@ export default dietCategory;
 
 /**
  * @swagger
- * /diet-categories/{id}:
+ * /dietCategories/{id}:
  *   get:
  *     summary: Pobieranie kategorii diety o określonym identyfikatorze
  *     tags: [Kontroler kategorii planów żywieniowych]
@@ -98,7 +98,7 @@ export default dietCategory;
 
 /**
  * @swagger
- * /diet-categories:
+ * /dietCategories:
  *   post:
  *     summary: Tworzenie nowej kategorii diety
  *     tags: [Kontroler kategorii planów żywieniowych]
@@ -124,7 +124,7 @@ export default dietCategory;
 
 /**
  * @swagger
- * /diet-categories/{id}:
+ * /dietCategories/{id}:
  *   put:
  *     summary: Aktualizacja kategorii diety o określonym identyfikatorze
  *     tags: [Kontroler kategorii planów żywieniowych]
@@ -157,7 +157,7 @@ export default dietCategory;
 
 /**
  * @swagger
- * /diet-categories/{id}:
+ * /dietCategories/{id}:
  *   delete:
  *     summary: Usunięcie kategorii diety o określonym identyfikatorze
  *     tags: [Kontroler kategorii planów żywieniowych]
