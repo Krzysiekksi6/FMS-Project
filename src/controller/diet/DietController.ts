@@ -46,8 +46,8 @@ export class DietController {
               dishes: {
                 ingredients: {
                   product: {
-                    productCategory: true
-                  }
+                    productCategory: true,
+                  },
                 },
               },
             },
@@ -78,8 +78,8 @@ export class DietController {
               dishes: {
                 ingredients: {
                   product: {
-                    productCategory: true
-                  }
+                    productCategory: true,
+                  },
                 },
               },
             },
@@ -199,17 +199,9 @@ export class DietController {
     ];
 
     const newDays = [];
-    console.log("Start date: ", startDate);
+    console.log("Data początkowa: ", startDate);
     let currentDate = new Date(startDate);
-    console.log("Current date: ", currentDate);
-
-    // Znajdź pierwszy dzień tygodnia
-    const startDayOfWeek = new Date(currentDate);
-
-
-    
-    startDayOfWeek.setDate(startDayOfWeek.getDate() - startDayOfWeek.getDay());
-    console.log("Start Day of weeek: ", startDayOfWeek)
+    console.log("Aktualna data: ", currentDate);
 
     for (let i = 0; i < weeklyDietIds.length; i++) {
       const weeklyDietId = weeklyDietIds[i];
@@ -220,19 +212,19 @@ export class DietController {
       });
 
       if (!weeklyDiet) {
-        return res.status(404).json({ error: "WeeklyDiet not found" });
+        return res
+          .status(404)
+          .json({ error: "Nie znaleziono tygodniowej diety" });
       }
 
-      currentDate = new Date(startDayOfWeek); // Resetuj aktualną datę na początek tygodnia
-
-      // Tworzymy dni dla każdego dnia tygodnia
-      for (let dayOfWeek = 1; dayOfWeek <= 7; dayOfWeek++) {
-        const dayName = polishDaysOfWeek[dayOfWeek - 1];
+      // Twórz dni dla każdego dnia tygodnia
+      for (let dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++) {
+        const dayName = polishDaysOfWeek[dayOfWeek];
 
         const newDay = this.dailyDietRepository.create({
           weeklyDiet,
           dayOfWeek: dayName,
-          date: currentDate,
+          date: new Date(currentDate),
           totalCalories,
           totalProtein,
           totalCarbs,
@@ -240,16 +232,16 @@ export class DietController {
         });
 
         newDays.push(newDay);
-        currentDate.setDate(currentDate.getDate() + 1); // Przejdź do kolejnego dnia
+        currentDate.setDate(currentDate.getDate() + 1); // Przejdź do następnego dnia
       }
 
-      startDayOfWeek.setDate(startDayOfWeek.getDate() + 7); // Przejdź do początku kolejnego tygodnia
+      currentDate.setDate(currentDate.getDate() + 6); // Przejdź na początek następnego tygodnia
     }
 
     await this.dailyDietRepository.save(newDays);
 
     res.status(201).json({
-      message: "Days added to the weeks successfully",
+      message: "Dni dodane do tygodni pomyślnie",
       newDays,
     });
   }
