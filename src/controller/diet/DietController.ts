@@ -199,11 +199,17 @@ export class DietController {
     ];
 
     const newDays = [];
+    console.log("Start date: ", startDate);
     let currentDate = new Date(startDate);
+    console.log("Current date: ", currentDate);
 
     // Znajdź pierwszy dzień tygodnia
     const startDayOfWeek = new Date(currentDate);
+
+
+    
     startDayOfWeek.setDate(startDayOfWeek.getDate() - startDayOfWeek.getDay());
+    console.log("Start Day of weeek: ", startDayOfWeek)
 
     for (let i = 0; i < weeklyDietIds.length; i++) {
       const weeklyDietId = weeklyDietIds[i];
