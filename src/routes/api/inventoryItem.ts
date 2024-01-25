@@ -25,6 +25,14 @@ const inventoryItem: Route[] = [
     action: "getOneItem",
     secure: false,
   },
+  {
+    method: "get",
+    route: "/getWastedFoodReport/:id",
+    controller: InventoryItemController,
+    validation: [param("id").isInt()],
+    action: "getWastedFoodReport",
+    secure: false,
+  },
 
   {
     method: "get",
@@ -48,11 +56,27 @@ const inventoryItem: Route[] = [
     secure: false,
   },
   {
-    method: "delete",
-    route: "/removeItem/:id",
+    method: "post",
+    route: "/removeItem",
     controller: InventoryItemController,
-    validation: [param("id").isInt()],
-    action: "removeItem",
+    validation: [],
+    action: "deleteItem",
+    secure: false,
+  },
+  {
+    method: "post",
+    route: "/removeAllItem",
+    controller: InventoryItemController,
+    validation: [],
+    action: "deleteFullItem",
+    secure: false,
+  },
+  {
+    method: "put",
+    route: "/addItem",
+    controller: InventoryItemController,
+    validation: [],
+    action: "incrementItem",
     secure: false,
   },
 ];
