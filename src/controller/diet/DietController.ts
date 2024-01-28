@@ -118,6 +118,13 @@ export class DietController {
           },
         },
       },
+      order: {
+        weeklyDiets: {
+          dailyDiets: {
+            date: "ASC"
+          }
+        }
+      }
     });
 
     if (!diet) {
