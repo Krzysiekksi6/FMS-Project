@@ -1,5 +1,4 @@
 import * as bcrypt from "bcrypt";
-import { getManager } from "typeorm";
 import { Request, Response } from "express";
 import { connectDatabase } from "../config/connectDatabase";
 import { User } from "../entity/user/User";

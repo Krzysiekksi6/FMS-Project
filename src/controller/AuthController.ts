@@ -37,7 +37,7 @@ export class AuthController {
         },
 
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: "45s" }
+        { expiresIn: "150s" }
       );
 
       const refreshToken = jwt.sign(

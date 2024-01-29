@@ -12,9 +12,7 @@ export class UserController {
         inventory: {
           items: true,
         },
-        user_details: {
-          currentDiet: true,
-        },
+        user_details: true,
       },
     });
     if (!users) {
@@ -43,6 +41,38 @@ export class UserController {
       return response.status(404).json({ message: "User not found" });
     }
     response.json(user);
+  }
+
+  async editOne(req: Request, res: Response) {
+    const id = parseInt(req.params.id);
+    try {
+      const userToUpdate = await this.userRepository.findOne({
+        where: { id },
+      });
+
+      if (!userToUpdate) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      if (req.body.firstname) {
+        userToUpdate.firstname = req.body.firstname;
+      }
+
+      if (req.body.lastname) {
+        userToUpdate.lastname = req.body.lastname;
+      }
+
+      if (req.body.username) {
+        userToUpdate.username = req.body.username;
+      }
+
+      await this.userRepository.save(userToUpdate);
+
+      res.json(userToUpdate);
+    } catch (error) {
+      console.error("An error occurred:", error);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
   }
 
   async remove(request: Request, response: Response, next: NextFunction) {

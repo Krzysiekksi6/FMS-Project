@@ -43,9 +43,47 @@ const users: Route[] = [
     route: "/users/:id",
     controller: UserController,
     action: "one",
+    validation: [],
+    secure: true,
+    roles: [UserRole.ADMIN],
+    // roles: [UserRole.ADMIN, UserRole.MODERATOR, UserRole.USER],
+    /**
+     * @swagger
+     * /users/{id}:
+     *   get:
+     *     summary: Pobiera informacje o jednym użytkowniku na podstawie identyfikatora
+     *     tags: [Kontroler użytkowników]
+     *     parameters:
+     *       - name: id
+     *         in: path
+     *         required: true
+     *         description: Identyfikator użytkownika
+     *         schema:
+     *           type: integer
+     *     responses:
+     *       '200':
+     *         description: Udane pobranie informacji o użytkowniku
+     *         content:
+     *           application/json:
+     *             example:
+     *               user: user1
+     *       '401':
+     *         description: Nieautoryzowany dostęp
+     *       '403':
+     *         description: Brak wymaganych uprawnień do wykonania tej operacji
+     *       '404':
+     *         description: Użytkownik o podanym identyfikatorze nie istnieje
+     */
+  },
+  {
+    method: "put",
+    route: "/users/:id/edit",
+    controller: UserController,
+    action: "editOne",
     validation: [param("id").isInt()],
-    secure: false,
-    roles: [UserRole.ADMIN, UserRole.MODERATOR, UserRole.USER],
+    secure: true,
+    roles: [UserRole.ADMIN],
+    // roles: [UserRole.ADMIN, UserRole.MODERATOR, UserRole.USER],
     /**
      * @swagger
      * /users/{id}:
@@ -80,6 +118,8 @@ const users: Route[] = [
     controller: UserController,
     action: "remove",
     validation: [param("id").isInt()],
+    secure: true,
+    roles: [UserRole.ADMIN],
     /**
      * @swagger
      * /users/{id}:
