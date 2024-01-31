@@ -1,22 +1,9 @@
-# Nazwa kursu
-Testowanie i jakość oprogramowania
+# Praca dyplomowa
 # Autor
 Krzysztof Książek
 # Temat projektu
 
 System zarządzania zasobami żywnościowymi oraz dietą
-
-# Opis projektu
-
-W ramach realizacji projektu zostanie zaprojektowana oraz
-zaimplementowana aplikacja, która będzie miała na celu zarządzaniem
-dietą użytkownika. Podstawowe funkcje systemu:
-- Wprowadzenie podstawowych danych dotyczących użytkwonika np.
-wzrost, waga
-- Kalkulator BMI
-- Generowanie listy zakupów
-- Podgląd przepisów kulinarnych
-
 
 
 # Uruchomienie projektu
